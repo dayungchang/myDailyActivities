@@ -1,36 +1,35 @@
 {
-  "expo": {
-    "name": "myDailyActivities",
-    "slug": "myDailyActivities",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+   "expo": {
+      "name": "myDailyActivities",
+      "slug": "myDailyActivities",
+      "version": "1.0.0",
+      "orientation": "portrait",
+      "icon": "./assets/icons/myDailyActivities.png",
+      "userInterfaceStyle": "light",
+      "splash": {
+         "image": "./assets/splash.png",
+         "resizeMode": "contain",
+         "backgroundColor": "#ffffff"
       },
-      "package": "com.dayungchang.myDailyActivities"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "72657f6f-5b31-48db-b5bb-86bf5936eb27"
+      "assetBundlePatterns": ["**/*"],
+      "ios": {
+         "supportsTablet": true
+      },
+      "android": {
+         "adaptiveIcon": {
+            "foregroundImage": "./assets/adaptive-icon.png",
+            "backgroundColor": "#ffffff"
+         },
+         "package": "com.dayungchang.myDailyActivities"
+      },
+      "web": {
+         "favicon": "./assets/favicon.png"
+      },
+      "extra": {
+         "eas": {
+            "projectId": "72657f6f-5b31-48db-b5bb-86bf5936eb27"
+         }
       }
-    }
-  }
+   }
 }
+

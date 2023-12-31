@@ -1,8 +1,13 @@
 import { StyleSheet } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "../screens/Home";
+import MyCalendarStackNavigation from "./MyCalendarStackNavigation";
 import ExerciseStackNavigation from "./ExerciseStackNavigation";
 import MedicationStackNavigation from "./MedicationStackNavigation";
+import RecipeStackNavigation from "./RecipeStackNavigation";
+import GeneralHealthTopTabNavigation from "./GeneralHealthTopTabNavigation";
+import DietStackNavigation from "./DietStackNavigation";
+import PersonalInformationStackNavigation from "./PersonalInformationStackNavigation";
 
 const HomeStackNavigation = () => {
    const stack = createNativeStackNavigator();
@@ -16,7 +21,16 @@ const HomeStackNavigation = () => {
             component={Home}
          />
          <stack.Screen
-            name="ExerciseStackNavigation"
+            name="myCalendarStackNavigation"
+            component={MyCalendarStackNavigation}
+            options={({ navigationBarColor, route }) => ({
+               headerBackTitle: "Home",
+               headerBackTitleStyle: { fontSize: 15 },
+               title: "Exercises",
+            })}
+         />
+         <stack.Screen
+            name="exerciseStackNavigation"
             component={ExerciseStackNavigation}
             options={({ navigationBarColor, route }) => ({
                headerBackTitle: "Home",
@@ -27,6 +41,42 @@ const HomeStackNavigation = () => {
          <stack.Screen
             name="medicationStackNavigation"
             component={MedicationStackNavigation}
+            options={({ navigationBarColor, route }) => ({
+               headerBackTitle: "Home",
+               headerBackTitleStyle: { fontSize: 15 },
+               title: "Medications",
+            })}
+         />
+         <stack.Screen
+            name="recipeStackNavigation"
+            component={RecipeStackNavigation}
+            options={({ navigationBarColor, route }) => ({
+               headerBackTitle: "Home",
+               headerBackTitleStyle: { fontSize: 15 },
+               title: "Medications",
+            })}
+         />
+         <stack.Screen
+            name="generalHealthTopTabNavigation"
+            component={GeneralHealthTopTabNavigation}
+            options={({ navigationBarColor, route }) => ({
+               headerBackTitle: "Home",
+               headerBackTitleStyle: { fontSize: 15 },
+               title: "Medications",
+            })}
+         />
+         <stack.Screen
+            name="dietStackNavigation"
+            component={DietStackNavigation}
+            options={({ navigationBarColor, route }) => ({
+               headerBackTitle: "Home",
+               headerBackTitleStyle: { fontSize: 15 },
+               title: "Medications",
+            })}
+         />
+         <stack.Screen
+            name="personalInformationStackNavigation"
+            component={PersonalInformationStackNavigation}
             options={({ navigationBarColor, route }) => ({
                headerBackTitle: "Home",
                headerBackTitleStyle: { fontSize: 15 },

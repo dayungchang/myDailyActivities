@@ -25,14 +25,14 @@ const Home = () => {
          />
          <ScrollView>
             <View>
-               {/* <MenuItem
-                  screenName="MyCalendarStackNavigation"
+               <MenuItem
+                  screenName="myCalendarStackNavigation"
                   image={Images.calendar}
                   label="My Calendar"
                   handleAppAccess={handleAppAccess}
-               /> */}
+               />
                <MenuItem
-                  screenName="ExerciseStackNavigation"
+                  screenName="exerciseStackNavigation"
                   image={Images.exercise}
                   label="Exercises"
                   handleAppAccess={handleAppAccess}
@@ -43,9 +43,8 @@ const Home = () => {
                   label="Medications"
                   handleAppAccess={handleAppAccess}
                />
-               {/* 
                <MenuItem
-                  screenName="RecipeStackNavigation"
+                  screenName="recipeStackNavigation"
                   image={Images.recipe}
                   label="Recipes"
                   handleAppAccess={handleAppAccess}
@@ -57,17 +56,17 @@ const Home = () => {
                   handleAppAccess={handleAppAccess}
                />
                <MenuItem
-                  screenName="DietStackNavigation"
+                  screenName="dietStackNavigation"
                   image={Images.diet}
                   label="Diet"
                   handleAppAccess={handleAppAccess}
                />
                <MenuItem
-                  screenName="PersonalInformationStackNavigation"
+                  screenName="personalInformationStackNavigation"
                   image={Images.personalInformation}
                   label="Personal Information"
                   handleAppAccess={handleAppAccess}
-               /> */}
+               />
             </View>
          </ScrollView>
       </View>

@@ -1,7 +1,8 @@
+import { StyleSheet } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { StyleSheet, Text, View } from "react-native";
 import Home from "../screens/Home";
 import ExerciseStackNavigation from "./ExerciseStackNavigation";
+import MedicationStackNavigation from "./MedicationStackNavigation";
 
 const HomeStackNavigation = () => {
    const stack = createNativeStackNavigator();
@@ -21,6 +22,15 @@ const HomeStackNavigation = () => {
                headerBackTitle: "Home",
                headerBackTitleStyle: { fontSize: 15 },
                title: "Exercises",
+            })}
+         />
+         <stack.Screen
+            name="medicationStackNavigation"
+            component={MedicationStackNavigation}
+            options={({ navigationBarColor, route }) => ({
+               headerBackTitle: "Home",
+               headerBackTitleStyle: { fontSize: 15 },
+               title: "Medications",
             })}
          />
       </stack.Navigator>

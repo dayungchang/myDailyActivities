@@ -37,12 +37,13 @@ const Home = () => {
                   label="Exercises"
                   handleAppAccess={handleAppAccess}
                />
-               {/* ?<MenuItem 
-                  screenName="MedicationStackNavigation"
+               <MenuItem
+                  screenName="medicationStackNavigation"
                   image={Images.medication}
                   label="Medications"
                   handleAppAccess={handleAppAccess}
                />
+               {/* 
                <MenuItem
                   screenName="RecipeStackNavigation"
                   image={Images.recipe}

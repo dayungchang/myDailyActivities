@@ -2,7 +2,7 @@
    "expo": {
       "name": "myDailyActivities",
       "slug": "myDailyActivities",
-      "version": "0.9.01",
+      "version": "0.9.02",
       "orientation": "portrait",
       "icon": "./assets/icons/myDailyActivities.png",
       "userInterfaceStyle": "light",

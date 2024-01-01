@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MyCalendar from "../screens/calendar/MyCalendar";
+import MyCalendar from "../screens/myCalendar/MyCalendar";
 
 const MyCalendarStackNavigation = () => {
    const stack = createNativeStackNavigator();

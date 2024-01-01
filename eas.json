@@ -7,8 +7,13 @@
          "developmentClient": true,
          "distribution": "internal"
       },
+      "preview002": {
+         "distribution": "internal",
+         "_comment": "Add myCalendar"
+      },
       "preview001": {
-         "distribution": "internal"
+         "distribution": "internal",
+         "_comment": "Adding top tab menus to Personal Information and General Health"
       },
       "production": {}
    },

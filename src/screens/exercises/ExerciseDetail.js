@@ -182,7 +182,7 @@ const ExerciseDetail = () => {
                      justifyContent: "space-between",
                   }}
                >
-                  <Text style={{ fontSize: 16 }}>{timeString}</Text>
+                  <Text style={{ fontSize: 16 }}>{values.exerciseDate}</Text>
                   <View style={{ flexDirection: "row", gap: 5 }}>
                      <Text style={{ fontSize: 16 }}>Weight</Text>
                      <Text style={{ fontSize: 16 }}>{values.weight}</Text>

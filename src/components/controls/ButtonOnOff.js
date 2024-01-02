@@ -7,7 +7,6 @@ const ButtonOnOff = ({ setFeelings }) => {
    const [clickCount, setClickCount] = useState(0);
 
    const handleLikeClicked = ({ likeCount }) => {
-      console.log("Like Count - ", likeCount);
       if (likeCount === 1 && clickCount > 0) {
          setClickCount(0);
          setFeelings(0);

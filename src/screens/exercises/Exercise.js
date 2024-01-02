@@ -76,7 +76,12 @@ const Exercise = () => {
             <ScrollView style={{ marginHorizontal: 10 }}>
                {exerciseRecs.length > 0 ? (
                   exerciseRecs.map((exercise, index) => (
-                     <ExerciseCard exerciseRec={exercise} />
+                     <View key={index}>
+                        <ExerciseCard
+                           exerciseRec={exercise}
+                           index={index}
+                        />
+                     </View>
                   ))
                ) : (
                   <Text>No exercise exists</Text>

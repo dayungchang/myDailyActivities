@@ -1,6 +1,7 @@
 const ExerciseSchema = {
    exerciseDate: "",
    feeling: "",
+   focusArea: "",
    image: "",
    locationUID: "",
    locationName: "",

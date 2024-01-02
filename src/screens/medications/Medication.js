@@ -12,6 +12,7 @@ const Medication = () => {
    const navigation = useNavigation();
 
    const [medicationRecs, setMedicationRecs] = useState([]);
+   const [isLoading, setIsLoading] = useState(false);
 
    const handleAddMedication = () => {
       console.log("Medication - handleAddMedication");
@@ -30,6 +31,7 @@ const Medication = () => {
       //    "Medication - fetchMedicationsByUserUID - auth.currentUser.uid",
       //    auth.currentUser.uid
       // );
+      setIsLoading(true);
       const colRef = collection(db, "medication");
       const qPull = query(colRef, where("userUID", "==", auth.currentUser.uid));
 
@@ -40,6 +42,7 @@ const Medication = () => {
          });
          setMedicationRecs(records);
       });
+      setIsLoading(false);
    };
    useEffect(() => {
       fetchMedicationsByUserUID();
@@ -65,7 +68,7 @@ const Medication = () => {
                onPress={() => handleAddMedication()}
             />
          </View>
-         {medicationRecs && (
+         {medicationRecs ? (
             <ScrollView style={{ marginHorizontal: 10 }}>
                {medicationRecs.length > 0 ? (
                   medicationRecs.map((medication, index) => (
@@ -75,9 +78,23 @@ const Medication = () => {
                      />
                   ))
                ) : (
-                  <Text>No medication exists</Text>
+                  <View>
+                     {isLoading ? (
+                        <Text>Loading ...</Text>
+                     ) : (
+                        <Text>No medication exists</Text>
+                     )}
+                  </View>
                )}
             </ScrollView>
+         ) : (
+            <View>
+               {isLoading ? (
+                  <Text>Loading ...</Text>
+               ) : (
+                  <Text>No medication exists</Text>
+               )}
+            </View>
          )}
       </View>
    );

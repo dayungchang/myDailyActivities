@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { Platform, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Platform, SafeAreaView, StyleSheet } from "react-native";
 import LoginStackNavigation from "./src/navigations/LoginStackNavigation";
 
 export default function App() {

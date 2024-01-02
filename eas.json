@@ -7,13 +7,21 @@
          "developmentClient": true,
          "distribution": "internal"
       },
+      "preview004": {
+         "distribution": "internal"
+         //  "_comment": "Enhance Exercise"
+      },
+      "preview003": {
+         "distribution": "internal"
+         //  "_comment": "Add myDiet-Init"
+      },
       "preview002": {
-         "distribution": "internal",
-         "_comment": "Add myCalendar"
+         "distribution": "internal"
+         //  "_comment": "Add myCalendar"
       },
       "preview001": {
-         "distribution": "internal",
-         "_comment": "Adding top tab menus to Personal Information and General Health"
+         "distribution": "internal"
+         //  "_comment": "Adding top tab menus to Personal Information and General Health"
       },
       "production": {}
    },

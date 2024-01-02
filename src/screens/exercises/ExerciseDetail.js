@@ -46,9 +46,13 @@ const ExerciseDetail = () => {
    );
    // const userState = useSelector((state) => state.user.data);
    const [routineRecs, setRoutineRecs] = useState(route.params.routineRecs);
-   const [values, setValues] = useState(route.params.values);
+   const [values, setValues] = useState({
+      ...route.params.values,
+      ["userUID"]: auth.currentUser.uid,
+      ["exerciseDate"]: Date.now(),
+   });
    const [errors, setErrors] = useState({});
-   const [value, setValue] = useState(null);
+   const [value, setValue] = useState({});
    const [isFocus, setIsFocus] = useState(false);
    const [dateString, setDateString] = useState("");
    const [timeString, setTimeString] = useState("");
@@ -80,7 +84,6 @@ const ExerciseDetail = () => {
 
    const handleInputs = (e) => {
       const { name, value } = e;
-
       setValues({ ...values, [name]: value });
    };
    const handleExistWithAdd = () => {
@@ -100,7 +103,7 @@ const ExerciseDetail = () => {
       setOpenRoutinePicker(false);
       console.log("values.name", values.name);
    };
-   useEffect(() => {
+   const initiateDataTime = () => {
       const today = new Intl.DateTimeFormat("en-US", dateFormat).format(
          Date.now()
       );
@@ -114,16 +117,16 @@ const ExerciseDetail = () => {
          dateTimeFormat
       ).format(Date.now());
       setDateTimeString(dateTimeStr);
+   };
+   useEffect(() => {
+      console.log("values"), values;
+      // initiateDataTime();
 
-      setValues({
-         ...values,
-         ["userUID"]: auth.currentUser.uid,
-         ["exerciseDate"]: Date.now(),
-      });
-      console.log("Values - ", values);
-      console.log("currentExercise", currentExercise);
-      if (!openAddExercise) fetchRoutine();
-   }, [currentRoutine]);
+      // setValues({
+      //    ...values,
+      // });
+      // if (!openAddExercise) fetchRoutine();
+   }, []);
 
    return (
       <View>
@@ -175,6 +178,15 @@ const ExerciseDetail = () => {
                      <Text style={{ fontSize: 16 }}>lbs</Text>
                   </View>
                </View>
+               <View
+                  style={{
+                     flexDirection: "row",
+                     gap: 10,
+                  }}
+               >
+                  <Text style={{ fontSize: 16 }}>Focus Area</Text>
+                  <Text style={{ fontSize: 16 }}>{values.focusArea}</Text>
+               </View>
             </View>
          </View>
 
@@ -205,11 +217,13 @@ const ExerciseDetail = () => {
                <View style={{ marginHorizontal: 10 }}>
                   {routineRecs.length > 0 ? (
                      routineRecs.map((routine, index) => (
-                        <RoutineCard
-                           record={routine}
-                           index={index}
-                           setShowRoutineSetDialog={setShowRoutineSetDialog}
-                        />
+                        <View key={index}>
+                           <RoutineCard
+                              record={routine}
+                              index={index}
+                              setShowRoutineSetDialog={setShowRoutineSetDialog}
+                           />
+                        </View>
                      ))
                   ) : (
                      <View style={{ margin: 20 }}>

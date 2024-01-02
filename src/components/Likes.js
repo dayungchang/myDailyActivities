@@ -18,7 +18,7 @@ const Likes = ({ feelingCount }) => {
                   >
                      <Image
                         source={Images.star}
-                        style={{ width: 15, height: 15, color: COLORS.yellow }}
+                        style={{ width: 15, height: 15 }}
                      />
                   </View>
                )

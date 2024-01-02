@@ -3,7 +3,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import IconFA from "react-native-vector-icons/FontAwesome";
 import { useState } from "react";
-import AuthSchema from "../../data/schemas/AuthSchema";
 import COLORS from "../../constants/COLORS";
 import DisplayIcon from "../DisplayIcon";
 
@@ -19,7 +18,6 @@ const Input = ({
    width,
    ...others
 }) => {
-   const [values, setValues] = useState(AuthSchema);
    const [hidePassword, setHidePassword] = useState(password);
    return (
       <View

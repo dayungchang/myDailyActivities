@@ -21,6 +21,7 @@ import COLORS from "../constants/COLORS";
 import Images from "../constants/Images";
 import Likes from "./Likes";
 import RoutineImage from "./RoutineImage";
+import RoutineSetDialog from "./RoutineSetDialog";
 import { useExerciseStore } from "../stores/ExerciseStore";
 
 const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
@@ -78,7 +79,7 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
          <View style={{ justifyContent: "center", marginRight: 10 }}>
             <RoutineImage imageName={record.name} />
          </View>
-         <View style={{ flex: 1 }}>
+         <View>
             <View
                style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
@@ -87,6 +88,7 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
                </Text>
                <Likes feelingCount={record.feeling} />
             </View>
+            {console.log("RoutineCard.js - record:", record.name)}
             <View style={{ flexDirection: "row", gap: 10, marginVertical: 10 }}>
                <View
                   style={{
@@ -191,27 +193,27 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
                               }}
                            >
                               <View style={{ flexDirection: "row" }}>
-                                 <Text style={{ marginHorizontal: 5 }}>
-                                    {index + 1}
-                                 </Text>
+                                 <View style={{ marginHorizontal: 5 }}>
+                                    <Text>{index + 1}</Text>
+                                 </View>
 
                                  {routineSet.weight ? (
-                                    <Text
-                                       style={{ width: 50, textAlign: "right" }}
-                                    >
-                                       {routineSet.weight}lbs
-                                    </Text>
+                                    <View style={{ width: 50 }}>
+                                       <Text style={{ textAlign: "right" }}>
+                                          {routineSet.weight}lbs
+                                       </Text>
+                                    </View>
                                  ) : (
-                                    <Text style={{ width: 50 }}></Text>
+                                    <View></View>
                                  )}
                                  {routineSet.reps ? (
-                                    <Text
-                                       style={{ width: 40, textAlign: "right" }}
-                                    >
-                                       {routineSet.reps}x
-                                    </Text>
+                                    <View style={{ width: 40 }}>
+                                       <Text style={{ textAlign: "right" }}>
+                                          {routineSet.reps}x
+                                       </Text>
+                                    </View>
                                  ) : (
-                                    <Text style={{ width: 40 }}></Text>
+                                    <View style={{ width: 40 }}></View>
                                  )}
                               </View>
                               <Likes feelingCount={routineSet.feeling} />
@@ -247,4 +249,3 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
 export default RoutineCard;
 
 const styles = StyleSheet.create({});
-

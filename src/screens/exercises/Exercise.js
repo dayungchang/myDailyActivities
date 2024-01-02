@@ -8,12 +8,12 @@ import {
    query,
    where,
 } from "firebase/firestore";
+import { auth, db } from "../../data/Firebase";
 import Button from "../../components/controls/Button";
-import NavBar from "../../components/controls/NavBar";
 import ExerciseCard from "../../components/ExerciseCard";
 import ExerciseSchema from "../../data/schemas/ExerciseSchema";
-import { auth, db } from "../../data/Firebase";
 import { useExerciseStore } from "../../stores/ExerciseStore";
+import NavBar from "../../components/controls/NavBar";
 
 const Exercise = () => {
    const navigation = useNavigation();
@@ -77,10 +77,7 @@ const Exercise = () => {
                {exerciseRecs.length > 0 ? (
                   exerciseRecs.map((exercise, index) => (
                      <View key={index}>
-                        <ExerciseCard
-                           exerciseRec={exercise}
-                           index={index}
-                        />
+                        <ExerciseCard exerciseRec={exercise} />
                      </View>
                   ))
                ) : (

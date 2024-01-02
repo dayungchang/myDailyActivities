@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { addDoc, collection } from "firebase/firestore";
+import GlobalStyle from "../styles/GlobalStyle";
+import COLORS from "../constants/COLORS";
 import Input from "./controls/Input";
 import Button from "./controls/Button";
-import ButtonOnOff from "./controls/ButtonOnOff";
-import COLORS from "../constants/COLORS";
-import { auth, db } from "../data/Firebase";
-import { useExerciseStore } from "../stores/ExerciseStore";
-import GlobalStyle from "../styles/GlobalStyle";
 import { dateFormat, dateTimeFormat, timeFormat } from "../utils/Library";
+import { auth, db } from "../data/Firebase";
+import ButtonOnOff from "./controls/ButtonOnOff";
+import { addDoc, collection } from "firebase/firestore";
+import { useExerciseStore } from "../stores/ExerciseStore";
 
 const ExerciseAdd = ({ values, setValues, setOpenAddExercise }) => {
    const navigation = useNavigation();
@@ -219,4 +219,3 @@ const ExerciseAdd = ({ values, setValues, setOpenAddExercise }) => {
 export default ExerciseAdd;
 
 const styles = StyleSheet.create({});
-

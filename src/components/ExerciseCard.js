@@ -9,6 +9,7 @@ import {
    View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { dateFormat, timeFormat } from "../utils/Library";
 import {
    collection,
    onSnapshot,
@@ -21,7 +22,6 @@ import COLORS from "../constants/COLORS";
 import Images from "../constants/Images";
 import Likes from "./Likes";
 import { useExerciseStore } from "../stores/ExerciseStore";
-import { dateFormat, timeFormat } from "../utils/Library";
 
 const ExerciseCard = ({ exerciseRec }) => {
    const navigation = useNavigation();
@@ -250,4 +250,3 @@ const ExerciseCard = ({ exerciseRec }) => {
 export default ExerciseCard;
 
 const styles = StyleSheet.create({});
-

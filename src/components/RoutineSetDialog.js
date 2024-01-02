@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
-import { useEffect, useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import Button from "./controls/Button";
-import ButtonOnOff from "./controls/ButtonOnOff";
-import Input from "./controls/Input";
 import COLORS from "../constants/COLORS";
-import { db } from "../data/Firebase";
-import { useExerciseStore } from "../stores/ExerciseStore";
 import GlobalStyle from "../styles/GlobalStyle";
+import Input from "./controls/Input";
+import ButtonOnOff from "./controls/ButtonOnOff";
+import { useExerciseStore } from "../stores/ExerciseStore";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../data/Firebase";
 
 const RoutineSetDialog = ({
    routineValues,

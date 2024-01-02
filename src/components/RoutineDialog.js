@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
    Pressable,
    StyleSheet,
@@ -7,14 +6,15 @@ import {
    TouchableOpacity,
    View,
 } from "react-native";
-import { addDoc, collection, doc, onSnapshot } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import GlobalStyle from "../styles/GlobalStyle";
+import COLORS from "../constants/COLORS";
 import Input from "./controls/Input";
 import Button from "./controls/Button";
 import ButtonOnOff from "./controls/ButtonOnOff";
-import COLORS from "../constants/COLORS";
+import { addDoc, collection, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../data/Firebase";
 import { useExerciseStore } from "../stores/ExerciseStore";
-import GlobalStyle from "../styles/GlobalStyle";
 
 const RoutineDialog = ({ exerciseValues, setOpenRoutineDialog }) => {
    const currentExercise = useExerciseStore((state) => state.currentExercise);
@@ -225,4 +225,3 @@ const styles = StyleSheet.create({
       justifyContent: "flex-start",
    },
 });
-

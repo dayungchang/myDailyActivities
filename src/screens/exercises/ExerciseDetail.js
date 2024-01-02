@@ -5,8 +5,10 @@ import {
    ScrollView,
    StyleSheet,
    Text,
+   TextInput,
    View,
 } from "react-native";
+
 import { useNavigation, useRoute } from "@react-navigation/native";
 import {
    collection,
@@ -17,19 +19,22 @@ import {
 } from "firebase/firestore";
 import Modal from "react-native-modal";
 import { auth, db } from "../../data/Firebase";
-import COLORS from "../../constants/COLORS";
+import { dateFormat, dateTimeFormat, timeFormat } from "../../utils/Library";
 import Button from "../../components/controls/Button";
-import NavBar from "../../components/controls/NavBar";
+import COLORS from "../../constants/COLORS";
+import GlobalStyle from "../../styles/GlobalStyle";
+import ExerciseSchema from "../../data/schemas/ExerciseSchema";
+import Images from "../../constants/Images";
 import RoutineCard from "../../components/RoutineCard";
-import Picker from "../../components/controls/Picker";
+import ExerciseEquipment from "../../data/meta/ExerciseEquipment";
 import Likes from "../../components/Likes";
+import Picker from "../../components/controls/Picker";
+import Input from "../../components/controls/Input";
 import ExerciseAdd from "../../components/ExerciseAdd";
 import RoutineDialog from "../../components/RoutineDialog";
 import RoutineSetDialog from "../../components/RoutineSetDialog";
-import ExerciseEquipment from "../../data/meta/ExerciseEquipment";
 import { useExerciseStore } from "../../stores/ExerciseStore";
-import GlobalStyle from "../../styles/GlobalStyle";
-import { dateFormat, dateTimeFormat, timeFormat } from "../../utils/Library";
+import NavBar from "../../components/controls/NavBar";
 
 const ExerciseDetail = () => {
    const navigation = useNavigation();
@@ -46,13 +51,9 @@ const ExerciseDetail = () => {
    );
    // const userState = useSelector((state) => state.user.data);
    const [routineRecs, setRoutineRecs] = useState(route.params.routineRecs);
-   const [values, setValues] = useState({
-      ...route.params.values,
-      ["userUID"]: auth.currentUser.uid,
-      ["exerciseDate"]: Date.now(),
-   });
+   const [values, setValues] = useState(route.params.values);
    const [errors, setErrors] = useState({});
-   const [value, setValue] = useState({});
+   const [value, setValue] = useState(null);
    const [isFocus, setIsFocus] = useState(false);
    const [dateString, setDateString] = useState("");
    const [timeString, setTimeString] = useState("");
@@ -84,6 +85,7 @@ const ExerciseDetail = () => {
 
    const handleInputs = (e) => {
       const { name, value } = e;
+
       setValues({ ...values, [name]: value });
    };
    const handleExistWithAdd = () => {
@@ -97,13 +99,22 @@ const ExerciseDetail = () => {
       navigation.goBack();
    };
    const handleAddRoutinePressed = () => {
+      console.log("handleAddRoutinePressed/Values", values);
+      console.log("currentExercise", currentExercise);
       setOpenRoutineDialog(true);
    };
    const handleSelectRotuine = () => {
       setOpenRoutinePicker(false);
       console.log("values.name", values.name);
    };
-   const initiateDataTime = () => {
+   useEffect(() => {
+      console.log("********************** ExerciseDetail");
+      console.log(
+         "ExerciseDetail - useEffect - currentExercise",
+         currentExercise,
+         "currentRoutine",
+         currentRoutine
+      );
       const today = new Intl.DateTimeFormat("en-US", dateFormat).format(
          Date.now()
       );
@@ -117,16 +128,16 @@ const ExerciseDetail = () => {
          dateTimeFormat
       ).format(Date.now());
       setDateTimeString(dateTimeStr);
-   };
-   useEffect(() => {
-      console.log("values"), values;
-      // initiateDataTime();
 
-      // setValues({
-      //    ...values,
-      // });
-      // if (!openAddExercise) fetchRoutine();
-   }, []);
+      setValues({
+         ...values,
+         ["userUID"]: auth.currentUser.uid,
+         ["exerciseDate"]: Date.now(),
+      });
+      console.log("Values - ", values);
+      console.log("currentExercise", currentExercise);
+      fetchRoutine();
+   }, [currentRoutine]);
 
    return (
       <View>
@@ -178,15 +189,6 @@ const ExerciseDetail = () => {
                      <Text style={{ fontSize: 16 }}>lbs</Text>
                   </View>
                </View>
-               <View
-                  style={{
-                     flexDirection: "row",
-                     gap: 10,
-                  }}
-               >
-                  <Text style={{ fontSize: 16 }}>Focus Area</Text>
-                  <Text style={{ fontSize: 16 }}>{values.focusArea}</Text>
-               </View>
             </View>
          </View>
 
@@ -217,13 +219,11 @@ const ExerciseDetail = () => {
                <View style={{ marginHorizontal: 10 }}>
                   {routineRecs.length > 0 ? (
                      routineRecs.map((routine, index) => (
-                        <View key={index}>
-                           <RoutineCard
-                              record={routine}
-                              index={index}
-                              setShowRoutineSetDialog={setShowRoutineSetDialog}
-                           />
-                        </View>
+                        <RoutineCard
+                           record={routine}
+                           index={index}
+                           setShowRoutineSetDialog={setShowRoutineSetDialog}
+                        />
                      ))
                   ) : (
                      <View style={{ margin: 20 }}>

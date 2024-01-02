@@ -13,12 +13,14 @@ import { auth } from "../../data/Firebase";
 import Images from "../../constants/Images";
 import Input from "../../components/controls/Input";
 import Button from "../../components/controls/Button";
+import DropdownList from "../../components/controls/DropdownList";
 
 const loginInitialValues = {
    // eMail: "",
    // password: "",
    eMail: `${process.env.EXPO_PUBLIC_FirebaseEmail}`,
    password: `${process.env.EXPO_PUBLIC_FirebasePassword}`,
+   test: "apple",
 };
 
 const Login = () => {
@@ -27,6 +29,11 @@ const Login = () => {
    const [values, setValues] = useState(loginInitialValues);
    const [errors, setErrors] = useState({});
    const [validateOnChange, setValidateOnChange] = useState(true);
+
+   const [items, setItems] = useState([
+      { label: "Apple", value: "apple" },
+      { label: "Banana", value: "banana" },
+   ]);
 
    const handleInputs = (e) => {
       const { name, value } = e;
@@ -125,6 +132,19 @@ const Login = () => {
                   }
                   width={280}
                   keyboardType="email-address"
+               />
+               <DropdownList
+                  label="Empty label"
+                  value={values.test}
+                  items={items}
+                  iconName="lock-outline"
+                  iconFamily="MaterialCommunityIcons"
+                  placeholder="Testing try out"
+                  error={errors.test}
+                  onChangeValue={(text) =>
+                     handleInputs({ name: "test", value: text })
+                  }
+                  width={280}
                />
             </View>
             <View style={{ marginTop: 50, alignItems: "center" }}>

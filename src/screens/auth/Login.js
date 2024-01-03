@@ -20,7 +20,7 @@ const loginInitialValues = {
    // password: "",
    eMail: `${process.env.EXPO_PUBLIC_FirebaseEmail}`,
    password: `${process.env.EXPO_PUBLIC_FirebasePassword}`,
-   test: "apple",
+   test: "",
 };
 
 const Login = () => {
@@ -30,14 +30,23 @@ const Login = () => {
    const [errors, setErrors] = useState({});
    const [validateOnChange, setValidateOnChange] = useState(true);
 
+   const [value, setValue] = useState("");
    const [items, setItems] = useState([
       { label: "Apple", value: "apple" },
       { label: "Banana", value: "banana" },
+      { label: "Orange", value: "orange" },
+      { label: "Grape", value: "grape" },
+      { label: "Pineapple", value: "pineapple" },
    ]);
+   const setSelectedValue = (e) => {
+      console.log("e", e);
+   };
 
    const handleInputs = (e) => {
       const { name, value } = e;
       setValues({ ...values, [name]: value });
+      console.log("values", values);
+      console.log("e", e);
       if (validateOnChange && name !== "password") validate({ [name]: value });
    };
    const validate = (fieldValues = values) => {
@@ -135,14 +144,18 @@ const Login = () => {
                />
                <DropdownList
                   label="Empty label"
-                  value={values.test}
+                  selectedValue={values.test}
+                  setSelectedValue={(value) =>
+                     setValues({ ...values, test: value })
+                  }
                   items={items}
+                  setItems={setItems}
                   iconName="lock-outline"
                   iconFamily="MaterialCommunityIcons"
-                  placeholder="Testing try out"
-                  error={errors.test}
-                  onChangeValue={(text) =>
-                     handleInputs({ name: "test", value: text })
+                  placeholder="Testing try out 1"
+                  // error={errors.test}
+                  onChangeValue={(value) =>
+                     handleInputs({ name: "test", value: value })
                   }
                   width={280}
                />

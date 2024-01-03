@@ -1,31 +1,36 @@
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
+import COLORS from "../../constants/COLORS";
+import DisplayIcon from "../DisplayIcon";
 
-const DropdownList = (
-   label = "Empty label",
-   value,
+const DropdownList = ({
+   label = "Empty label string",
+   selectedValue,
+   setSelectedValue,
    items,
+   setItems,
    iconName,
    iconFamily,
    placeholder,
-   error,
+   // error,
    onChangeValue,
    width,
-   ...others
-) => {
+   // ...others
+}) => {
    const [open, setOpen] = useState(false);
-   const [value, setValue] = useState(null);
-   const [items, setItems] = useState([
-      { label: "Apple", value: "apple" },
-      { label: "Banana", value: "banana" },
-   ]);
+   const [value, setValue] = useState(selectedValue);
+   // const [items, setItems] = useState([
+   //    { label: "Apple", value: "apple" },
+   //    { label: "Banana", value: "banana" },
+   // ]);
+   // const [pickerWidth, setPickerWidth] = useState(width - 30);
 
    return (
       <View
          style={{
-            marginTop: 5,
-            marginBottom: error ? 0 : 10,
+            marginTop: 10,
+            // marginBottom: error ? 0 : 10,
             width: width ? width : 280,
          }}
       >
@@ -33,21 +38,38 @@ const DropdownList = (
             style={{
                flexDirection: "row",
                borderBottomWidth: 0.5,
-               borderBottomColor: error ? COLORS.red : COLORS.darkGrey01,
+               // borderBottomColor: error ? COLORS.red : COLORS.darkGrey01,
                justifyContent: "space-between",
             }}
          >
             <View flexDirection="row">
-               <View style={{ width: iconName ? 30 : 0, alignItems: "center" }}>
+               <View
+                  style={{
+                     width: iconName ? 30 : 0,
+                     alignItems: "center",
+                     justifyContent: "flex-end",
+                     marginBottom: 2,
+                  }}
+               >
                   <DisplayIcon
                      displayLocation="Left"
                      iconName={iconName}
                      iconFamily={iconFamily}
-                     password={password}
+                     password={false}
                      hidePassword={true}
                      onPress={() => {}}
                   />
                </View>
+               {/* <DropDownPicker
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  multiple={false}
+                  onChangeValue={(value) => console.log(value)}
+               /> */}
                <DropDownPicker
                   open={open}
                   value={value}
@@ -55,17 +77,25 @@ const DropdownList = (
                   setOpen={setOpen}
                   setValue={setValue}
                   setItems={setItems}
+                  style={{
+                     width: 260,
+                     height: 35,
+                     borderWidth: 0,
+
+                     backgroundColor: "rgba(52, 52, 52, 0)",
+                  }}
                   placeholder={placeholder}
-                  onChangeValue={onChangeValue}
+                  onChangeValue={setSelectedValue}
                />
             </View>
          </View>
-         {error && (
+         {/* {error && (
             <Text style={{ color: COLORS.red, fontSize: 12 }}>{error}</Text>
-         )}
+         )} */}
 
          <Text
             style={{
+               marginTop: -35,
                fontSize: 10,
                color: COLORS.darkGrey01,
             }}

@@ -134,7 +134,6 @@ const ExerciseAdd = ({ values, setValues, setOpenAddExercise }) => {
                   handleInputs({ name: "locationName", value: text })
                }
                width={225}
-               keyboardType="name"
             />
             <View style={{ width: 120 }}>
                {/* https://www.youtube.com/watch?v=tN6MpJ9ElJY */}

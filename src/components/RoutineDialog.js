@@ -129,7 +129,6 @@ const RoutineDialog = ({ exerciseValues, setOpenRoutineDialog }) => {
                      handleInputs({ name: "name", value: text })
                   }
                   width={225}
-                  keyboardType="name"
                />
                {/* <DropdownList /> */}
             </View>

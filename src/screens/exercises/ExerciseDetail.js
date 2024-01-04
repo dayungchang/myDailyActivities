@@ -146,6 +146,7 @@ const ExerciseDetail = () => {
                      justifyContent: "space-between",
                   }}
                >
+<<<<<<< HEAD
                   <View style={{ flexDirection: "row", gap: 10 }}>
                      <Text style={{ fontSize: 18, fontWeight: 600 }}>
                         {dateString}
@@ -207,6 +208,9 @@ const ExerciseDetail = () => {
                      </Text>
                      <Text style={{ fontSize: 16 }}>{values.focusArea}</Text>
                   </View>
+=======
+                  <Text style={{ fontSize: 16 }}>{values.exerciseDate}</Text>
+>>>>>>> 38c5e4669ed9df726937d87d0599a95733ec02ea
                   <View style={{ flexDirection: "row", gap: 5 }}>
                      <Text style={{ fontSize: 16, fontWeight: "bold" }}>
                         Weight

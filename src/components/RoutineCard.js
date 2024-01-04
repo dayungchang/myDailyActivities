@@ -43,7 +43,6 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
 
    const fetchRoutinesSetByRoutine = () => {
       // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
-      console.log("Routine UID", record.id);
       const colRef = collection(db, "routineSet");
       const qPull = query(
          colRef,
@@ -58,12 +57,10 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
          });
          setRoutineSetRecs(records);
          setRoutineSetCount(records.length);
-         console.log("Routine set records", records.length);
       });
    };
 
    useEffect(() => {
-      console.log("Routine - ", record);
       fetchRoutinesSetByRoutine();
    }, []);
    return (
@@ -88,7 +85,6 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
                </Text>
                <Likes feelingCount={record.feeling} />
             </View>
-            {console.log("RoutineCard.js - record:", record.name)}
             <View style={{ flexDirection: "row", gap: 10, marginVertical: 10 }}>
                <View
                   style={{

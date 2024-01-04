@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+   Alert,
    Image,
    Pressable,
    ScrollView,
@@ -9,7 +10,7 @@ import {
    View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { dateFormat, timeFormat } from "../utils/Library";
+import { DateString, TimeSting } from "../utils/Library";
 import {
    collection,
    onSnapshot,
@@ -31,8 +32,12 @@ const ExerciseCard = ({ exerciseRec }) => {
       (state) => state.setCurrentExercise
    );
 
-   const [dateString, setDateString] = useState("");
-   const [timeString, setTimeString] = useState("");
+   const [exerciseDateString, setExerciseDateString] = useState(
+      DateString(exerciseRec.exerciseDate)
+   );
+   const [exerciseTimeString, setExerciseTimeString] = useState(
+      TimeSting(exerciseRec.exerciseDate)
+   );
    const [routineRecs, setRoutineRecs] = useState([]);
    const [routineCount, setRoutineCount] = useState(0);
    const [showDetail, setShowDetail] = useState(false);
@@ -48,19 +53,20 @@ const ExerciseCard = ({ exerciseRec }) => {
       return;
    };
    const handleExerciseCardPressed = () => {
-      console.log("************************");
-      console.log("ExerciseCard - exerciseRec before Zustand", exerciseRec);
       setCurrentExercise(exerciseRec);
-      navigation.navigate("ExerciseDetail", {
-         addExercise: false,
-         values: exerciseRec,
-         routineRecs: routineRecs,
-      });
+      if (exerciseRec.status === "A") {
+         navigation.navigate("ExerciseDetail", {
+            addExercise: false,
+            values: exerciseRec,
+            routineRecs: routineRecs,
+         });
+      } else {
+         Alert.alert("Exercise Completed");
+      }
    };
    const fetchRoutinesByExercise = () => {
       // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
       const colRef = collection(db, "routine");
-      console.log("Exercise UID", exerciseRec.id);
       const qPull = query(
          colRef,
          where("exerciseUID", "==", exerciseRec.id),
@@ -70,23 +76,16 @@ const ExerciseCard = ({ exerciseRec }) => {
       onSnapshot(qPull, (snapshot) => {
          let records = [];
          snapshot.docs.forEach((doc) => {
-            records.push({ ...doc.data(), id: doc.id });
+            records.push({
+               ...doc.data(),
+               id: doc.id,
+            });
          });
          setRoutineRecs(records);
          setRoutineCount(records.length);
       });
    };
    useEffect(() => {
-      if (exerciseRec.exerciseDate) {
-         const today = new Intl.DateTimeFormat("en-US", dateFormat).format(
-            exerciseRec.exerciseDate
-         );
-         setDateString(today);
-         const time = new Intl.DateTimeFormat("en-US", timeFormat).format(
-            exerciseRec.exerciseDate
-         );
-         setTimeString(time);
-      }
       fetchRoutinesByExercise();
    }, []);
 
@@ -97,7 +96,8 @@ const ExerciseCard = ({ exerciseRec }) => {
             padding: 10,
             borderWidth: 0.2,
             borderRadius: 7,
-            backgroundColor: "white",
+            backgroundColor:
+               exerciseRec.status === "A" ? "white" : COLORS.lightGrey,
             marginBottom: 10,
          }}
       >
@@ -118,7 +118,7 @@ const ExerciseCard = ({ exerciseRec }) => {
                }}
             >
                <Text style={{ fontSize: 18, fontWeight: 600 }}>
-                  {dateString}
+                  {exerciseDateString}
                </Text>
                <Text style={{ fontSize: 18, fontWeight: 600 }}>
                   {exerciseRec.locationName}
@@ -131,20 +131,35 @@ const ExerciseCard = ({ exerciseRec }) => {
                style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  gap: 15,
                   justifyContent: "space-between",
+                  gap: 15,
                }}
             >
-               <Text style={{ fontSize: 16 }}>{timeString}</Text>
+               <Text style={{ fontSize: 16 }}>{exerciseTimeString}</Text>
                <View style={{ flexDirection: "row", gap: 5 }}>
-                  <Text style={{ fontSize: 16 }}>Weight</Text>
+                  <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                     Weight
+                  </Text>
                   <Text style={{ fontSize: 16 }}>{exerciseRec.weight}</Text>
-                  <Text style={{ fontSize: 16 }}>lbs</Text>
+                  <Text style={{ fontSize: 16, fontWeight: "bold" }}>lbs</Text>
                </View>
             </View>
-
             <View
                style={{
+                  marginTop: 5,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 15,
+               }}
+            >
+               <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                  Focus area
+               </Text>
+               <Text>{exerciseRec.focusArea}</Text>
+            </View>
+            <View
+               style={{
+                  marginTop: 15,
                   flexDirection: "row",
                   alignItems: "center",
                   gap: 15,

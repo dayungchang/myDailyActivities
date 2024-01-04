@@ -52,7 +52,6 @@ const MyCalendar = () => {
          records.map((record) => {
             strTime = timeToString(record.dueDt.toDate());
             if (!items[strTime]) items[strTime] = [];
-            console.log(strTime);
             items[strTime].push({
                name: record.event,
                height: Math.max(50, Math.floor(Math.random() * 150)),
@@ -89,7 +88,7 @@ const MyCalendar = () => {
       Object.keys(items).forEach((key) => {
          newItems[key] = items[key];
       });
-      console.log("newItems", newItems);
+      // console.log("newItems", newItems);
       // items = newItems;
    };
    // , 1000);
@@ -253,7 +252,7 @@ const AddNewEvent = ({ setOpenAddEvent }) => {
       });
    };
    const handleCancelClicked = () => {
-      console.log("handleCancelClicked");
+      // console.log("handleCancelClicked");
       setOpenAddEvent(false);
    };
    return (

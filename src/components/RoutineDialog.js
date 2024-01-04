@@ -15,6 +15,7 @@ import ButtonOnOff from "./controls/ButtonOnOff";
 import { addDoc, collection, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../data/Firebase";
 import { useExerciseStore } from "../stores/ExerciseStore";
+import DropdownList from "./controls/DropdownList";
 
 const RoutineDialog = ({ exerciseValues, setOpenRoutineDialog }) => {
    const currentExercise = useExerciseStore((state) => state.currentExercise);
@@ -57,7 +58,6 @@ const RoutineDialog = ({ exerciseValues, setOpenRoutineDialog }) => {
       }).then((res) => {
          const docRef = doc(db, "routine", res.id);
          onSnapshot(docRef, (doc) => {
-            console.log("--------", doc.data(), doc.id);
             setCurrentRoutine(doc.data());
          });
          setValues({ ...values, ["routineSetUID"]: res.id });
@@ -70,23 +70,14 @@ const RoutineDialog = ({ exerciseValues, setOpenRoutineDialog }) => {
             setDate: new Date(),
             userUID: values.userUID,
             weight: values.routineWeight,
-         }).then((res) => {
-            console.log("currentRoutine", currentRoutine, res.id);
-         });
+         }).then((res) => {});
       });
-      console.log("handleSaveClicked - currentRoutine", currentRoutine);
       setOpenRoutineDialog(false);
    };
    const handleCancelClicked = () => {
       setOpenRoutineDialog(false);
    };
-   useEffect(() => {
-      console.log(
-         "**************************************** RoutineDialog - useEffect"
-      );
-      console.log("currentExercise", currentExercise);
-      console.log("currentRoutine", currentRoutine);
-   }, []);
+   useEffect(() => {}, []);
 
    return (
       <View
@@ -140,6 +131,7 @@ const RoutineDialog = ({ exerciseValues, setOpenRoutineDialog }) => {
                   width={225}
                   keyboardType="name"
                />
+               {/* <DropdownList /> */}
             </View>
             <View style={{ marginHorizontal: 10 }}>
                <Text

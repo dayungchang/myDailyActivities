@@ -6,11 +6,12 @@ import {
    StyleSheet,
    Text,
    TextInput,
+   TouchableOpacity,
    View,
 } from "react-native";
-
 import { useNavigation, useRoute } from "@react-navigation/native";
 import {
+   addDoc,
    collection,
    onSnapshot,
    orderBy,
@@ -19,7 +20,15 @@ import {
 } from "firebase/firestore";
 import Modal from "react-native-modal";
 import { auth, db } from "../../data/Firebase";
-import { dateFormat, dateTimeFormat, timeFormat } from "../../utils/Library";
+import { Feather } from "@expo/vector-icons";
+import {
+   DateString,
+   DurationHM,
+   TimeSting,
+   dateFormat,
+   dateTimeFormat,
+   timeFormat,
+} from "../../utils/Library";
 import Button from "../../components/controls/Button";
 import COLORS from "../../constants/COLORS";
 import GlobalStyle from "../../styles/GlobalStyle";
@@ -55,19 +64,23 @@ const ExerciseDetail = () => {
    const [errors, setErrors] = useState({});
    const [value, setValue] = useState(null);
    const [isFocus, setIsFocus] = useState(false);
-   const [dateString, setDateString] = useState("");
-   const [timeString, setTimeString] = useState("");
+   const [dateString, setDateString] = useState(
+      DateString(values.exerciseDate)
+   );
+   const [timeString, setTimeString] = useState(TimeSting(values.exerciseDate));
    const [dateTimeString, setDateTimeString] = useState("");
    const [equipments, setEquipments] = useState(ExerciseEquipment);
 
    const [openRoutinePicker, setOpenRoutinePicker] = useState(false);
    const [openRoutineDialog, setOpenRoutineDialog] = useState(false);
    const [showRoutineSetDialog, setShowRoutineSetDialog] = useState(false);
+   const [openExerciseUpdate, setOpenExerciseUpdate] = useState(false);
 
    const currentDate = new Date();
    let todate = new Date();
    const fetchRoutine = () => {
       // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
+
       const colRef = collection(db, "routine");
       const qPull = query(
          colRef,
@@ -99,124 +112,131 @@ const ExerciseDetail = () => {
       navigation.goBack();
    };
    const handleAddRoutinePressed = () => {
-      console.log("handleAddRoutinePressed/Values", values);
-      console.log("currentExercise", currentExercise);
       setOpenRoutineDialog(true);
    };
    const handleSelectRotuine = () => {
       setOpenRoutinePicker(false);
-      console.log("values.name", values.name);
    };
    useEffect(() => {
-      console.log("********************** ExerciseDetail");
-      console.log(
-         "ExerciseDetail - useEffect - currentExercise",
-         currentExercise,
-         "currentRoutine",
-         currentRoutine
-      );
-      const today = new Intl.DateTimeFormat("en-US", dateFormat).format(
-         Date.now()
-      );
-      setDateString(today);
-      const timeStr = new Intl.DateTimeFormat("en-US", timeFormat).format(
-         Date.now()
-      );
-      setTimeString(timeStr);
-      const dateTimeStr = new Intl.DateTimeFormat(
-         "en-US",
-         dateTimeFormat
-      ).format(Date.now());
-      setDateTimeString(dateTimeStr);
-
-      setValues({
-         ...values,
-         ["userUID"]: auth.currentUser.uid,
-         ["exerciseDate"]: Date.now(),
-      });
-      console.log("Values - ", values);
-      console.log("currentExercise", currentExercise);
-      fetchRoutine();
+      if (!openAddExercise) fetchRoutine();
    }, [currentRoutine]);
 
    return (
-      <View>
+      <View style={{ flex: 1 }}>
          <NavBar
             title="Detail"
             backScreen="Exercise"
          />
-         <View
-            style={[
-               GlobalStyle.boarderWithShadow,
-               {
-                  margin: 10,
-                  padding: 10,
-                  borderRadius: 7,
-                  backgroundColor: "#F5F5F5",
-               },
-            ]}
-         >
+         <TouchableOpacity onPress={() => setOpenExerciseUpdate(true)}>
             <View
-               style={{
-                  flexDirection: "row",
-                  gap: 10,
-                  justifyContent: "space-between",
-               }}
+               style={[
+                  GlobalStyle.boarderWithShadow,
+                  {
+                     margin: 10,
+                     padding: 10,
+                     borderRadius: 7,
+                     backgroundColor: "#F5F5F5",
+                  },
+               ]}
             >
-               <View style={{ flexDirection: "row", gap: 10 }}>
-                  <Text style={{ fontSize: 18, fontWeight: 600 }}>
-                     {dateString}
-                  </Text>
-                  <Text style={{ fontSize: 18, fontWeight: 600 }}>
-                     {values.locationName}
-                  </Text>
-               </View>
-               <Likes feelingCount={values.feeling} />
-            </View>
-            <View style={{ marginTop: 10 }}>
                <View
                   style={{
                      flexDirection: "row",
-                     alignItems: "center",
-                     gap: 15,
+                     gap: 10,
                      justifyContent: "space-between",
                   }}
                >
-                  <Text style={{ fontSize: 16 }}>{timeString}</Text>
+                  <View style={{ flexDirection: "row", gap: 10 }}>
+                     <Text style={{ fontSize: 18, fontWeight: 600 }}>
+                        {dateString}
+                     </Text>
+                     <Text style={{ fontSize: 18, fontWeight: 600 }}>
+                        {values.locationName}
+                     </Text>
+                  </View>
+                  <Likes feelingCount={values.feeling} />
+               </View>
+               <View style={{ marginTop: 10 }}>
+                  <View
+                     style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 15,
+                        justifyContent: "space-between",
+                     }}
+                  >
+                     <View
+                        style={{
+                           flexDirection: "row",
+                           alignItems: "center",
+                           gap: 10,
+                        }}
+                     >
+                        <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                           Start
+                        </Text>
+                        <Text style={{ fontSize: 16 }}>{timeString}</Text>
+                     </View>
+                     <View
+                        style={{
+                           flexDirection: "row",
+                           alignItems: "center",
+                           gap: 10,
+                        }}
+                     >
+                        <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                           Duration
+                        </Text>
+                        <Text>
+                           {DurationHM(
+                              (startDateTime = values.exerciseDate),
+                              (endDateTime = new Date())
+                           )}
+                        </Text>
+                     </View>
+                  </View>
+                  <View
+                     style={{
+                        flexDirection: "row",
+                        gap: 10,
+                        alignItems: "center",
+                     }}
+                  >
+                     <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                        Focus Area
+                     </Text>
+                     <Text style={{ fontSize: 16 }}>{values.focusArea}</Text>
+                  </View>
                   <View style={{ flexDirection: "row", gap: 5 }}>
-                     <Text style={{ fontSize: 16 }}>Weight</Text>
+                     <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                        Weight
+                     </Text>
                      <Text style={{ fontSize: 16 }}>{values.weight}</Text>
-                     <Text style={{ fontSize: 16 }}>lbs</Text>
+                     <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                        lbs
+                     </Text>
                   </View>
                </View>
             </View>
-         </View>
+         </TouchableOpacity>
 
-         <View
-            style={{
-               marginRight: 10,
-               alignItems: "flex-end",
-            }}
-         >
-            <Button
-               label="+ Routine"
-               onPress={handleAddRoutinePressed}
-               width={130}
-               buttonStyle={styles.buttonStyle}
-               // buttonBlockStyle={ExerciseStyles.exerciseAddButtonBlockStyle}
-               labelStyle={{}}
-            />
-         </View>
-
-         {/* // ) : ( )} */}
-         <View
-            style={[
-               GlobalStyle.boarderWithShadow,
-               { margin: 10, borderRadius: 7, backgroundColor: "#F0F0F0" },
-            ]}
-         >
-            <ScrollView>
-               <View style={{ marginHorizontal: 10 }}>
+         <ScrollView style={{ margin: 5, borderRadius: 10 }}>
+            <View
+               style={[
+                  GlobalStyle.boarderWithShadow,
+                  {
+                     margin: 10,
+                     borderRadius: 7,
+                     backgroundColor: "#F0F0F0",
+                  },
+               ]}
+            >
+               <View
+                  style={{
+                     flex: 1,
+                     marginHorizontal: 10,
+                  }}
+               >
                   {routineRecs.length > 0 ? (
                      routineRecs.map((routine, index) => (
                         <RoutineCard
@@ -231,8 +251,38 @@ const ExerciseDetail = () => {
                      </View>
                   )}
                </View>
-            </ScrollView>
-         </View>
+            </View>
+         </ScrollView>
+
+         {!openAddExercise && (
+            <View
+               style={{
+                  flex: 0.1,
+                  alignItems: "flex-end",
+                  marginHorizontal: 20,
+               }}
+            >
+               <TouchableOpacity
+                  style={{
+                     width: 50,
+                     height: 50,
+                     marginTop: -80,
+                     marginRight: 20,
+                     alignItems: "center",
+                     justifyContent: "center",
+                     backgroundColor: COLORS.lighterGrey,
+                     borderRadius: 24,
+                  }}
+                  onPress={handleAddRoutinePressed}
+               >
+                  <Feather
+                     name="plus-circle"
+                     size={46}
+                     color={COLORS.appBackground}
+                  />
+               </TouchableOpacity>
+            </View>
+         )}
          <Modal
             visible={openRoutinePicker}
             onRequestClose={() => setOpenRoutinePicker(false)}
@@ -248,6 +298,11 @@ const ExerciseDetail = () => {
                setValues={setValue}
                setOpenRoutinePicker={setOpenRoutinePicker}
             />
+         </Modal>
+         <Modal visible={openExerciseUpdate}>
+            <TouchableOpacity onPress={() => setOpenExerciseUpdate(false)}>
+               <Text>Close Update Window</Text>
+            </TouchableOpacity>
          </Modal>
          <KeyboardAvoidingView>
             <Modal

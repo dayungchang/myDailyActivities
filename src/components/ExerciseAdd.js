@@ -10,6 +10,8 @@ import { auth, db } from "../data/Firebase";
 import ButtonOnOff from "./controls/ButtonOnOff";
 import { addDoc, collection } from "firebase/firestore";
 import { useExerciseStore } from "../stores/ExerciseStore";
+import DropdownList from "./controls/DropdownList";
+import FocusArea from "../data/meta/FocusArea";
 
 const ExerciseAdd = ({ values, setValues, setOpenAddExercise }) => {
    const navigation = useNavigation();
@@ -23,6 +25,8 @@ const ExerciseAdd = ({ values, setValues, setOpenAddExercise }) => {
    const [dateTimeString, setDateTimeString] = useState("");
    const [errors, setErrors] = useState({});
 
+   const [items, setItems] = useState(FocusArea);
+
    const handleInputs = (e) => {
       const { name, value } = e;
       setValues({ ...values, [name]: value });
@@ -34,7 +38,6 @@ const ExerciseAdd = ({ values, setValues, setOpenAddExercise }) => {
       const colRef = collection(db, "exercise");
       addDoc(colRef, values).then((res) => {
          setValues({ ...values, ["exerciseUID"]: res.id });
-         console.log("values before setCurrentExercise - ", values);
          setCurrentExercise(values);
       });
       setOpenAddExercise(false);
@@ -56,7 +59,6 @@ const ExerciseAdd = ({ values, setValues, setOpenAddExercise }) => {
          dateTimeFormat
       ).format(Date.now());
       setDateTimeString(dateTimeStr);
-      console.log("Values - ", values);
 
       setValues({
          ...values,
@@ -186,7 +188,28 @@ const ExerciseAdd = ({ values, setValues, setOpenAddExercise }) => {
                width={225}
                keyboardType="numeric"
             />
-            <ButtonOnOff setFeelings={handleFeelingPressed} />
+            {/* https://www.youtube.com/watch?v=tN6MpJ9ElJY */}
+            <DropdownList
+               label="Focus Area"
+               selectedValue={values.focusArea}
+               setSelectedValue={(value) =>
+                  setValues({ ...values, focusArea: value })
+               }
+               items={items}
+               setItems={setItems}
+               iconName="lock-outline"
+               iconFamily="MaterialCommunityIcons"
+               placeholder="Area of focus"
+               // error={errors.test}
+               onChangeValue={(value) =>
+                  handleInputs({ name: "test", value: value })
+               }
+               width={225}
+               dropDownDirection="TOP"
+            />
+            <View style={{ marginTop: 30 }}>
+               <ButtonOnOff setFeelings={handleFeelingPressed} />
+            </View>
          </View>
          <View
             style={{

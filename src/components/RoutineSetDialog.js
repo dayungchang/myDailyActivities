@@ -22,6 +22,7 @@ const RoutineSetDialog = ({
       ["routineName"]: "",
       ["routineWeight"]: "",
       ["routineReps"]: "",
+      ["feeling"]: "",
    });
    const [errors, setErrors] = useState({});
 
@@ -48,13 +49,9 @@ const RoutineSetDialog = ({
       });
    };
    const handleCancelClicked = () => {
-      console.log("handleCancelClicked");
       setShowRoutineSetDialog(false);
    };
-   useEffect(() => {
-      console.log("currentExercise", currentExercise);
-      console.log("currentRoutine", currentRoutine);
-   }, []);
+   useEffect(() => {}, []);
 
    return (
       <View

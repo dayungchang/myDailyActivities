@@ -23,7 +23,6 @@ const Register = () => {
 
    const handleInputs = (e) => {
       const { name, value } = e;
-      console.log("handleInputs - ", e);
       setValues({ ...values, [name]: value });
       if (
          validateOnChange &&
@@ -33,7 +32,6 @@ const Register = () => {
          validate({ [name]: value });
    };
    const validate = (fieldValues = values) => {
-      console.log("validate - ", fieldValues);
       let temp = { ...errors };
       if ("name" in fieldValues)
          temp.name = fieldValues.name ? "" : "Name is required";

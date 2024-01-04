@@ -4,9 +4,7 @@ import COLORS from "../constants/COLORS";
 import GlobalStyle from "../styles/GlobalStyle";
 
 const MedicationCard = ({ medicationRec, handleMedicationEdit }) => {
-   useEffect(() => {
-      console.log("MedicationCard - useEffect - medicationRecs", medicationRec);
-   }, []);
+   useEffect(() => {}, []);
 
    return (
       <TouchableOpacity

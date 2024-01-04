@@ -15,14 +15,9 @@ const Medication = () => {
    const [isLoading, setIsLoading] = useState(false);
 
    const handleAddMedication = () => {
-      console.log("Medication - handleAddMedication");
       navigation.navigate("medicationDetail", { record: MedicationSchema });
    };
    const handleMedicationEdit = ({ medicationRec }) => {
-      console.log(
-         "Medication - handleMedicationEdit - medicationRec",
-         medicationRec
-      );
       navigation.navigate("medicationDetail", { record: medicationRec });
    };
    const fetchMedicationsByUserUID = () => {

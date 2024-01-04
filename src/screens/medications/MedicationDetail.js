@@ -34,17 +34,9 @@ const MedicationDetail = () => {
          return Object.values(temp).every((x) => x === "");
    };
    const handleCancelButtonPressed = () => {
-      console.log(
-         "MedicationDetial - handleCancelButtonPressed- values",
-         values
-      );
       // navigation.goBack();
    };
    const handleSaveButtonPressed = async () => {
-      console.log(
-         "MedicationDetial - handleSaveButtonPressed - values",
-         values
-      );
       if (validate()) {
          if (values.id) {
             //stackoverflow.com/questions/49682327/how-to-update-a-single-firebase-firestore-document

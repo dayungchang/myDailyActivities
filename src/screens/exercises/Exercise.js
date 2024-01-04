@@ -41,7 +41,6 @@ const Exercise = () => {
       });
    };
    const handleAddExercise = () => {
-      console.log("i - handleAddExercise");
       navigation.navigate("ExerciseDetail", {
          addExercise: true,
          values: ExerciseSchema,

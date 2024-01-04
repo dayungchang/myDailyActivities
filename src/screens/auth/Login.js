@@ -52,7 +52,6 @@ const Login = () => {
       navigation.navigate("Register");
    };
    const handleLoginPressed = async () => {
-      console.log("handleLoginPressed");
       if (validate()) {
          await signInWithEmailAndPassword(auth, values.eMail, values.password)
             .then((userCredential) => {

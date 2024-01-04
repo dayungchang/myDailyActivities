@@ -10,6 +10,9 @@ const ExerciseSchema = {
    routineCount: "",
    userUID: "",
    weight: "",
+   status: "A",
+   endDate: "",
+   duration: "",
 };
 
 export default ExerciseSchema;

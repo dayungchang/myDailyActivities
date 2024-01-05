@@ -3,7 +3,7 @@
    "version": "1.0.0",
    "main": "node_modules/expo/AppEntry.js",
    "scripts": {
-      "start": "expo start -c --android",
+      "start": "expo start -c --ios",
       "android": "expo start --android",
       "ios": "expo start --ios",
       "web": "expo start --web"
@@ -37,4 +37,3 @@
    },
    "private": true
 }
-

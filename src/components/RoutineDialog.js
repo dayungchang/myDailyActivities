@@ -16,6 +16,7 @@ import { addDoc, collection, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../data/Firebase";
 import { useExerciseStore } from "../stores/ExerciseStore";
 import DropdownList from "./controls/DropdownList";
+import FocusArea from "../data/meta/FocusArea";
 
 const RoutineDialog = ({ exerciseValues, setOpenRoutineDialog }) => {
    const currentExercise = useExerciseStore((state) => state.currentExercise);
@@ -30,6 +31,11 @@ const RoutineDialog = ({ exerciseValues, setOpenRoutineDialog }) => {
       ["routineReps"]: "",
    });
    const [errors, setErrors] = useState({});
+   const [focusAreaRec, setFocusAreaRec] = useState(
+      FocusArea.filter((data) => data.value === exerciseValues.focusArea)
+   );
+   const [routineList, setRoutineList] = useState(focusAreaRec.routines);
+
    const handleFeelingPressed = ({ selectedValue }) => {
       setValues({ ...values, ["feeling"]: selectedValue });
    };
@@ -77,7 +83,11 @@ const RoutineDialog = ({ exerciseValues, setOpenRoutineDialog }) => {
    const handleCancelClicked = () => {
       setOpenRoutineDialog(false);
    };
-   useEffect(() => {}, []);
+   useEffect(() => {
+      console.log("exerciseValues", exerciseValues);
+      console.log("focusAreaRec", focusAreaRec);
+      console.log("routineList", routineList);
+   }, []);
 
    return (
       <View

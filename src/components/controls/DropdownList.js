@@ -21,10 +21,7 @@ const DropdownList = ({
 }) => {
    const [open, setOpen] = useState(false);
    const [value, setValue] = useState(selectedValue);
-   // const [items, setItems] = useState([
-   //    { label: "Apple", value: "apple" },
-   //    { label: "Banana", value: "banana" },
-   // ]);
+
    const [pickerWidth, setPickerWidth] = useState(width - 20);
 
    return (
@@ -61,16 +58,6 @@ const DropdownList = ({
                      onPress={() => {}}
                   />
                </View>
-               {/* <DropDownPicker
-                  open={open}
-                  value={value}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  setItems={setItems}
-                  multiple={false}
-                  onChangeValue={(value) => console.log(value)}
-               /> */}
                <DropDownPicker
                   open={open}
                   value={value}

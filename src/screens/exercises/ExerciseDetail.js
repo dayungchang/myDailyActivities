@@ -44,6 +44,14 @@ import RoutineDialog from "../../components/RoutineDialog";
 import RoutineSetDialog from "../../components/RoutineSetDialog";
 import { useExerciseStore } from "../../stores/ExerciseStore";
 import NavBar from "../../components/controls/NavBar";
+import FocusArea, {
+   ABS_Beginner,
+   ARM_Beginner,
+   Chest_Beginner,
+   Chest_Beginner1,
+} from "../../data/meta/FocusArea";
+import DropdownList from "../../components/controls/DropdownList";
+import ButtonOnOff from "../../components/controls/ButtonOnOff";
 
 const ExerciseDetail = () => {
    const navigation = useNavigation();
@@ -54,13 +62,14 @@ const ExerciseDetail = () => {
    const setCurrentExercise = useExerciseStore(
       (state) => state.setCurrentExercise
    );
+   let focusAreaSelect = route.params.exerciseRec.focusArea;
 
-   const [openAddExercise, setOpenAddExercise] = useState(
-      route.params.addExercise
-   );
+   const [values, setValues] = useState(route.params.exerciseRec);
+   const [routines, setRoutines] = useState(focusAreaSelect);
+   const [focusAreas, setFocusAreas] = useState(FocusArea);
+   const [openAddExercise, setOpenAddExercise] = useState(false);
    // const userState = useSelector((state) => state.user.data);
    const [routineRecs, setRoutineRecs] = useState(route.params.routineRecs);
-   const [values, setValues] = useState(route.params.values);
    const [errors, setErrors] = useState({});
    const [value, setValue] = useState(null);
    const [isFocus, setIsFocus] = useState(false);
@@ -84,7 +93,7 @@ const ExerciseDetail = () => {
       const colRef = collection(db, "routine");
       const qPull = query(
          colRef,
-         where("exerciseUID", "==", values.id),
+         where("exerciseUID", "==", values.exerciseUID),
          orderBy("routineDate", "desc")
       );
       onSnapshot(qPull, (snapshot) => {
@@ -118,7 +127,15 @@ const ExerciseDetail = () => {
       setOpenRoutinePicker(false);
    };
    useEffect(() => {
-      if (!openAddExercise) fetchRoutine();
+      let focusRoutines = focusAreas.filter(
+         (item) => item.value === values.focusArea
+      );
+      console.log("Parameter: ", route.params.exerciseRec.focusArea);
+      console.log("routines: ", routines);
+      // setRoutines(focusRoutines[0].routines);
+      // if (focusRoutines[0]) setValues({ ...values, ["routines"]: routines });
+      // console.log("values - ExerciseDetail", values);
+      // fetchRoutine();
    }, [currentRoutine]);
 
    return (
@@ -237,7 +254,7 @@ const ExerciseDetail = () => {
                      marginHorizontal: 10,
                   }}
                >
-                  {routineRecs.length > 0 ? (
+                  {/* {routineRecs.length > 0 ? (
                      routineRecs.map((routine, index) => (
                         <View key={index}>
                            <RoutineCard
@@ -251,7 +268,7 @@ const ExerciseDetail = () => {
                      <View style={{ margin: 20 }}>
                         <Text>No routine exists</Text>
                      </View>
-                  )}
+                  )} */}
                </View>
             </View>
          </ScrollView>
@@ -317,10 +334,10 @@ const ExerciseDetail = () => {
                coverScreen={true}
                backdropOpacity={0.8}
             >
-               <RoutineDialog
-                  exerciseValues={values}
-                  setExerciseValues={setValues}
+               <NewRoutine
+                  exerciseRec={values}
                   setOpenRoutineDialog={setOpenRoutineDialog}
+                  routines={routines}
                />
             </Modal>
          </KeyboardAvoidingView>
@@ -343,6 +360,227 @@ const ExerciseDetail = () => {
    );
 };
 
+const NewRoutine = ({ exerciseRec, setOpenRoutineDialog, routines }) => {
+   const currentExercise = useExerciseStore((state) => state.currentExercise);
+   const currentRoutine = useExerciseStore((state) => state.currentRoutine);
+   const setCurrentRoutine = useExerciseStore(
+      (state) => state.setCurrentRoutine
+   );
+
+   const [values, setValues] = useState({
+      ...exerciseRec,
+      ["routineName"]: "",
+      ["routineWeight"]: "",
+      ["routineReps"]: "",
+   });
+   const [errors, setErrors] = useState({});
+   const [focusAreaRec, setFocusAreaRec] = useState(FocusArea);
+   const [routineList, setRoutineList] = useState([]);
+
+   const handleFeelingPressed = ({ selectedValue }) => {
+      setValues({ ...values, ["feeling"]: selectedValue });
+   };
+   const handleInputs = (e) => {
+      const { name, value } = e;
+      setValues({ ...values, [name]: value });
+   };
+   const handleSaveClicked = () => {
+      //github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
+      const colRef = collection(db, "routine");
+      addDoc(colRef, {
+         exerciseUID: values.id,
+         name: values.name,
+         reps: values.routineReps,
+         routineDate: new Date(),
+         userUID: values.userUID,
+         weight: values.routineWeight,
+         routineSet: [
+            {
+               reps: values.routineReps,
+               feeling: values.feeling,
+               setDate: new Date(),
+               weight: values.routineWeight,
+            },
+         ],
+      }).then((res) => {
+         const docRef = doc(db, "routine", res.id);
+         onSnapshot(docRef, (doc) => {
+            setCurrentRoutine(doc.data());
+         });
+         setValues({ ...values, ["routineSetUID"]: res.id });
+         const setRef = collection(db, "routineSet");
+         addDoc(setRef, {
+            exerciseUID: values.id,
+            routineUID: res.id,
+            reps: values.routineReps,
+            feeling: values.feeling,
+            setDate: new Date(),
+            userUID: values.userUID,
+            weight: values.routineWeight,
+         }).then((res) => {});
+      });
+      setOpenRoutineDialog(false);
+   };
+   const handleCancelClicked = () => {
+      setOpenRoutineDialog(false);
+   };
+   useEffect(() => {
+      console.log("values", values);
+      console.log("focusAreaRec", focusAreaRec);
+      console.log("exerciseRec.focusArea", exerciseRec.focusArea);
+      console.log("routines", routines);
+      setRoutineList(
+         FocusArea.filter((data) => data.value === exerciseRec.focusArea)
+      );
+      // );
+      console.log("routineList", focusAreaRec[0].routines);
+   }, []);
+   return (
+      <View
+         style={[
+            GlobalStyle.boarderWithShadow,
+            {
+               borderWidth: 0.25,
+               marginTop: -30,
+               marginHorizontal: 30,
+               borderRadius: 10,
+               backgroundColor: "#f0f0f0",
+            },
+         ]}
+      >
+         <View
+            style={{
+               padding: 10,
+               backgroundColor: COLORS.grey,
+               borderTopLeftRadius: 10,
+               borderTopRightRadius: 10,
+               alignItems: "center",
+            }}
+         >
+            <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+               New Routine
+            </Text>
+         </View>
+         <View
+            style={{
+               marginTop: 10,
+               marginHorizontal: 10,
+            }}
+         >
+            <View
+               style={{
+                  marginHorizontal: 10,
+                  marginTop: 20,
+                  alignItems: "center",
+               }}
+            >
+               <Input
+                  label="Name"
+                  value={values.name}
+                  iconName=""
+                  iconFamily=""
+                  error={errors.name}
+                  placeholder="Name of routine"
+                  onChangeText={(text) =>
+                     handleInputs({ name: "name", value: text })
+                  }
+                  width={225}
+               />
+               {/* https://www.youtube.com/watch?v=tN6MpJ9ElJY */}
+               {console.log("focusAreaRec", focusAreaRec)}
+               <DropdownList
+                  label="Name of the routine"
+                  selectedValue={values.name}
+                  setSelectedValue={(value) =>
+                     setValues({ ...values, focusArea: value })
+                  }
+                  items={routineList}
+                  setItems={setRoutineList}
+                  iconName="lock-outline"
+                  iconFamily="MaterialCommunityIcons"
+                  placeholder="Name of routine"
+                  // error={errors.test}
+                  onChangeValue={(value) =>
+                     handleInputs({ name: "name", value: value })
+                  }
+                  width={225}
+                  dropDownDirection="TOP"
+               />
+               {/* <DropdownList /> */}
+            </View>
+            <View style={{ marginHorizontal: 10 }}>
+               <Text
+                  style={{
+                     fontSize: 16,
+                     fontWeight: "bold",
+                     justifyContent: "left",
+                  }}
+               >
+                  Set # 1
+               </Text>
+               <View
+                  style={{
+                     marginHorizontal: 10,
+                     alignItems: "center",
+                  }}
+               >
+                  <Input
+                     label="Weight"
+                     value={values.routineWeight}
+                     iconName="weight"
+                     iconFamily="MaterialCommunityIcons"
+                     error={errors.routineWeight}
+                     placeholder="Weight used"
+                     onChangeText={(text) =>
+                        handleInputs({ name: "routineWeight", value: text })
+                     }
+                     width={225}
+                     keyboardType="numeric"
+                  />
+                  <Input
+                     label="Reps"
+                     value={values.routineReps}
+                     iconName="number"
+                     iconFamily="Octicons"
+                     error={errors.routineReps}
+                     placeholder="Number of reps"
+                     onChangeText={(text) =>
+                        handleInputs({ name: "routineReps", value: text })
+                     }
+                     width={225}
+                     keyboardType="numeric"
+                  />
+                  <ButtonOnOff setFeelings={handleFeelingPressed} />
+               </View>
+            </View>
+         </View>
+         <View
+            style={{
+               flexDirection: "row",
+               justifyContent: "space-between",
+               marginTop: 40,
+            }}
+         >
+            <Button
+               label="Cancel"
+               onPress={() => handleCancelClicked()}
+               buttonBlockStyle={{ flex: 2 / 5 }}
+               labelStyle={{ textAlign: "center" }}
+               labelColor={COLORS.black}
+               buttonColor={COLORS.grey}
+               width={125}
+            />
+            <Button
+               label="Save"
+               onPress={() => handleSaveClicked()}
+               buttonBlockStyle={{ flex: 2 / 5 }}
+               labelStyle={{ textAlign: "center" }}
+               width={125}
+            />
+         </View>
+      </View>
+   );
+};
 // userUID: "",
 //    locationUID: "",
 //    locationName: "",

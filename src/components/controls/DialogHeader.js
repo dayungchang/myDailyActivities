@@ -14,7 +14,6 @@ export default DialogHeader;
 const styles = StyleSheet.create({
    dialogHeaderStyle: {
       padding: 10,
-      marginTop: 50,
       backgroundColor: COLORS.grey,
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,

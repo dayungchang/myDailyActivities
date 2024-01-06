@@ -7,14 +7,14 @@ const ExerciseStackNavigation = () => {
    const stack = createNativeStackNavigator();
    return (
       <View style={{ flex: 1 }}>
-         <stack.Navigator initialRouteName="Exercise">
+         <stack.Navigator initialRouteName="exercise">
             <stack.Screen
-               name="Exercise"
+               name="exercise"
                component={Exercise}
                options={{ headerShown: false }}
             />
             <stack.Screen
-               name="ExerciseDetail"
+               name="exerciseDetail"
                component={ExerciseDetail}
                options={{ headerShown: false }}
             />
@@ -26,4 +26,3 @@ const ExerciseStackNavigation = () => {
 export default ExerciseStackNavigation;
 
 const styles = StyleSheet.create({});
-

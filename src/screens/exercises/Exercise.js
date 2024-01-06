@@ -22,7 +22,6 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { auth, db } from "../../data/Firebase";
 import Button from "../../components/controls/Button";
-// import ExerciseCard from "../../components/ExerciseCard";
 import ExerciseSchema from "../../data/schemas/ExerciseSchema";
 import { useExerciseStore } from "../../stores/ExerciseStore";
 import NavBar from "../../components/controls/NavBar";
@@ -41,6 +40,7 @@ import {
 import Likes from "../../components/Likes";
 import Images from "../../constants/Images";
 import DialogHeader from "../../components/controls/DialogHeader";
+import FocusArea from "../../data/meta/FocusArea";
 
 const Exercise = () => {
    const navigation = useNavigation();
@@ -50,10 +50,10 @@ const Exercise = () => {
    );
 
    const [exerciseRecs, setExerciseRecs] = useState([]);
-   const [openAddExercise, setOpenAddExercise] = useState(false);
+   const [openNewExercise, setOpenNewExercise] = useState(false);
 
-   const handleAddExercisePressed = () => {
-      setOpenAddExercise(true);
+   const handleNewExercisePressed = () => {
+      setOpenNewExercise(true);
    };
    const fetchExercisesByUserUID = () => {
       // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
@@ -70,12 +70,11 @@ const Exercise = () => {
             records.push({ ...doc.data(), id: doc.id });
          });
          setExerciseRecs(records);
-         console.log("records", records);
       });
    };
-   const handleAddExercise = () => {
+   const handleNewExercise = () => {
       navigation.navigate("ExerciseDetail", {
-         addExercise: true,
+         NewExercise: true,
          values: ExerciseSchema,
          routineRecs: [],
       });
@@ -85,18 +84,23 @@ const Exercise = () => {
    }, []);
 
    return (
-      <View style={{ flex: 1 }}>
+      <>
          <View style={{ height: 65 }}>
             <NavBar
                title="Exercise"
                backScreen="Home"
             />
          </View>
-         <View style={{ flex: 1, marginVertical: 20 }}>
-            {exerciseRecs && (
-               <ScrollView style={{ marginHorizontal: 10 }}>
-                  <View>
-                     {exerciseRecs.length > 0 ? (
+         <ScrollView style={{ marginHorizontal: 10 }}>
+            <View
+               style={{
+                  marginBottom: 10,
+                  justifyContent: "space-between",
+               }}
+            >
+               <View style={{ paddingVertical: 20 }}>
+                  {exerciseRecs &&
+                     (exerciseRecs.length > 0 ? (
                         exerciseRecs.map((exercise, index) => (
                            <View key={index}>
                               <ExerciseCard exerciseRec={exercise} />
@@ -104,49 +108,16 @@ const Exercise = () => {
                         ))
                      ) : (
                         <Text>No exercise exists</Text>
-                     )}
-                  </View>
-               </ScrollView>
-            )}
-         </View>
-         {/* <View>
-               <View
-                  style={{
-                     marginTop: 10,
-                     marginRight: 20,
-                     height: 60,
-                     alignItems: "flex-end",
-                  }}
-               >
-                  <Button
-                     label="+ Exercise"
-                     width={150}
-                     onPress={() => handleAddExercise()}
-                  />
-                  {exerciseRecs && (
-                     <ScrollView style={{ marginHorizontal: 10 }}>
-                        <View>
-                           {exerciseRecs.length > 0 ? (
-                              exerciseRecs.map((exercise, index) => (
-                                 <View key={index}>
-                                    <ExerciseCard exerciseRec={exercise} />
-                                 </View>
-                              ))
-                           ) : (
-                              <Text>No exercise exists</Text>
-                           )}
-                        </View>
-                     </ScrollView>
-                  )}
+                     ))}
                </View>
             </View>
-               */}
+         </ScrollView>
          <View
             style={{
-               flex: 0.1,
+               position: "absolute",
+               right: 0,
+               bottom: 20,
                alignItems: "flex-end",
-               marginHorizontal: 20,
-               marginTop: -80,
             }}
          >
             <TouchableOpacity
@@ -156,10 +127,10 @@ const Exercise = () => {
                   marginRight: 20,
                   alignItems: "center",
                   justifyContent: "center",
-                  backgroundColor: COLORS.lighterGrey,
+                  backgroundColor: COLORS.lightBlue01,
                   borderRadius: 24,
                }}
-               onPress={handleAddExercisePressed}
+               onPress={handleNewExercisePressed}
             >
                <Feather
                   name="plus-circle"
@@ -169,38 +140,73 @@ const Exercise = () => {
             </TouchableOpacity>
          </View>
          <Modal
-            onRequestClose={() => setOpenAddExercise(false)}
-            visible={openAddExercise}
+            onRequestClose={() => setOpenNewExercise(false)}
+            visible={openNewExercise}
             animationType="slideInUp"
             animationOut="slideOutDown"
             backdropColor={COLORS.white}
             coverScreen={true}
-            backdropOpacity={0.8}
+            transparent={true}
          >
             <KeyboardAvoidingView>
-               <NewExercise
-                  // values={values}
-                  // setValues={setValues}
-                  setOpenAddExercise={setOpenAddExercise}
-               />
+               <NewExercise setOpenNewExercise={setOpenNewExercise} />
             </KeyboardAvoidingView>
          </Modal>
-      </View>
+      </>
    );
 };
 
-const NewExercise = ({ setOpenAddExercise }) => {
+const NewExercise = ({ setOpenNewExercise }) => {
+   const navigation = useNavigation();
+
    const [values, setValues] = useState(ExerciseSchema);
+   const [errors, setErrors] = useState({});
+   const [items, setItems] = useState(FocusArea);
    const [dateString, setDateString] = useState("1/5/2024");
    const [timeString, settimeString] = useState("8:00 AM");
 
+   const handleInputs = (e) => {
+      const { name, value } = e;
+      setValues({ ...values, [name]: value });
+   };
+   const handleFeelingPressed = ({ selectedValue }) => {
+      setValues({ ...values, ["feeling"]: selectedValue });
+   };
+   const handleSaveClicked = () => {
+      const colRef = collection(db, "exercise");
+      addDoc(colRef, values).then((res) => {
+         setOpenNewExercise(false);
+         let temp = { ...values, ["exerciseUID"]: res.id };
+         navigation.navigate("exerciseDetail", { exerciseRec: temp });
+      });
+   };
+   const handleCancelClicked = () => {
+      setOpenNewExercise(false);
+   };
+
    useEffect(() => {
-      console.log(values);
+      // TODO: Store the last use location in the user document
+      setValues({
+         ...values,
+         locationName: "Planet Fittness",
+         userUID: auth.currentUser.uid,
+         exerciseDate: new Date(),
+      });
+      // let temp = items.filter((item) => item.value === "ABS Beginner");
+      // console.log("temp", temp);
+      // console.log("temp.routines", temp[0].routines);
    }, []);
 
    return (
-      <View style={[GlobalStyle.boarderWithShadow, styles.addExerciseStyle]}>
+      <View
+         style={[
+            GlobalStyle.boarderWithShadow,
+            styles.newExerciseStyle,
+            { marginTop: 100 },
+         ]}
+      >
          <DialogHeader headerTitle="New Exercise" />
+         {/* Header information */}
          <View style={{ margin: 10 }}>
             <View
                style={{
@@ -215,6 +221,86 @@ const NewExercise = ({ setOpenAddExercise }) => {
                <Text style={styles.headerTextStyle}>{dateString}</Text>
                <Text style={styles.headerTextStyle}>{timeString}</Text>
             </View>
+         </View>
+         <View
+            style={{
+               marginHorizontal: 10,
+               marginTop: 20,
+               alignItems: "center",
+            }}
+         >
+            <Input
+               label="Location"
+               value={values.locationName}
+               iconName="location-pin"
+               iconFamily="MaterialIcons"
+               error={errors.locationName}
+               placeholder="Location"
+               onChangeText={(text) =>
+                  handleInputs({ name: "locationName", value: text })
+               }
+               width={225}
+               autoCapitalize="words"
+            />
+            <Input
+               label="Weight"
+               value={values.weight}
+               iconName="weight"
+               iconFamily="FontAwesome5"
+               error={errors.location}
+               placeholder="Your body weight"
+               onChangeText={(text) =>
+                  handleInputs({ name: "weight", value: text })
+               }
+               width={225}
+               keyboardType="numeric"
+            />
+            {/* https://www.youtube.com/watch?v=tN6MpJ9ElJY */}
+            <DropdownList
+               label="Focus Area"
+               selectedValue={values.focusArea}
+               setSelectedValue={(value) =>
+                  setValues({ ...values, focusArea: value })
+               }
+               items={items}
+               setItems={setItems}
+               iconName="lock-outline"
+               iconFamily="MaterialCommunityIcons"
+               placeholder="Area of focus"
+               // error={errors.test}
+               onChangeValue={(value) =>
+                  handleInputs({ name: "test", value: value })
+               }
+               width={225}
+               dropDownDirection="TOP"
+            />
+            <View style={{ marginTop: 30 }}>
+               <ButtonOnOff setFeelings={handleFeelingPressed} />
+            </View>
+         </View>
+         <View
+            style={{
+               flexDirection: "row",
+               justifyContent: "space-between",
+               marginTop: 40,
+            }}
+         >
+            <Button
+               label="Cancel"
+               onPress={() => handleCancelClicked()}
+               buttonBlockStyle={{ flex: 2 / 5 }}
+               labelStyle={{ textAlign: "center" }}
+               labelColor={COLORS.black}
+               buttonColor={COLORS.grey}
+               width={125}
+            />
+            <Button
+               label="Save"
+               onPress={() => handleSaveClicked()}
+               buttonBlockStyle={{ flex: 2 / 5 }}
+               labelStyle={{ textAlign: "center" }}
+               width={125}
+            />
          </View>
       </View>
    );
@@ -237,16 +323,14 @@ const NewExercise = ({ setOpenAddExercise }) => {
    //       const { name, value } = e;
    //       setValues({ ...values, [name]: value });
    //    };
-   //    const handleFeelingPressed = ({ selectedValue }) => {
-   //       setValues({ ...values, ["feeling"]: selectedValue });
-   //    };
+
    //    const handleSaveClicked = () => {
    //       const colRef = collection(db, "exercise");
    //       addDoc(colRef, values).then((res) => {
    //          setValues({ ...values, ["exerciseUID"]: res.id });
    //          setCurrentExercise(values);
    //       });
-   //       setOpenAddExercise(false);
+   //       setOpenNewExercise(false);
    //    };
    //    const handleCancelClicked = () => {
    //       navigation.goBack();
@@ -273,7 +357,7 @@ const NewExercise = ({ setOpenAddExercise }) => {
    //       });
    //    }, []);
    //    return (
-   //       <View style={[GlobalStyle.boarderWithShadow, styles.addExerciseStyle]}>
+   //      <View style={[GlobalStyle.boarderWithShadow, styles.newExerciseStyle]}>
    //
    //          <View
    //             style={{
@@ -370,35 +454,12 @@ const NewExercise = ({ setOpenAddExercise }) => {
    //                <ButtonOnOff setFeelings={handleFeelingPressed} />
    //             </View>
    //          </View>
-   //          <View
-   //             style={{
-   //                flexDirection: "row",
-   //                justifyContent: "space-between",
-   //                marginTop: 40,
-   //             }}
-   //          >
-   //             <Button
-   //                label="Cancel"
-   //                onPress={() => handleCancelClicked()}
-   //                buttonBlockStyle={{ flex: 2 / 5 }}
-   //                labelStyle={{ textAlign: "center" }}
-   //                labelColor={COLORS.black}
-   //                buttonColor={COLORS.grey}
-   //                width={125}
-   //             />
-   //             <Button
-   //                label="Save"
-   //                onPress={() => handleSaveClicked()}
-   //                buttonBlockStyle={{ flex: 2 / 5 }}
-   //                labelStyle={{ textAlign: "center" }}
-   //                width={125}
-   //             />
-   //          </View>
+
    //       </View>
    //    );
 };
 
-const ExerciseCard = ({ exerciseRec, handleExerciseCardPressed }) => {
+const ExerciseCard = ({ exerciseRec }) => {
    const navigation = useNavigation();
 
    const currentExercise = useExerciseStore((state) => state.currentExercise);
@@ -426,18 +487,19 @@ const ExerciseCard = ({ exerciseRec, handleExerciseCardPressed }) => {
       }
       return;
    };
-   // const handleExerciseCardPressed = () => {
-   //    setCurrentExercise(exerciseRec);
-   //    if (exerciseRec.status === "A") {
-   //       navigation.navigate("ExerciseDetail", {
-   //          addExercise: false,
-   //          values: exerciseRec,
-   //          routineRecs: routineRecs,
-   //       });
-   //    } else {
-   //       Alert.alert("Exercise Completed");
-   //    }
-   // };
+   const handleExerciseCardPressed = () => {
+      setCurrentExercise(exerciseRec);
+      if (exerciseRec.status === "A") {
+         navigation.navigate("exerciseDetail", { exerciseRec: exerciseRec });
+         // navigation.navigate("ExerciseDetail", {
+         //    NewExercise: false,
+         //    values: exerciseRec,
+         //    routineRecs: routineRecs,
+         // });
+      } else {
+         Alert.alert("Exercise Completed");
+      }
+   };
    const fetchRoutinesByExercise = () => {
       // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
       const colRef = collection(db, "routine");
@@ -460,8 +522,6 @@ const ExerciseCard = ({ exerciseRec, handleExerciseCardPressed }) => {
       });
    };
    useEffect(() => {
-      console.log(exerciseRec);
-
       fetchRoutinesByExercise();
    }, []);
 
@@ -780,7 +840,7 @@ const ExerciseCard = ({ exerciseRec, handleExerciseCardPressed }) => {
 export default Exercise;
 
 const styles = StyleSheet.create({
-   addExerciseStyle: {
+   newExerciseStyle: {
       borderWidth: 0.25,
       marginTop: -30,
       marginHorizontal: 30,

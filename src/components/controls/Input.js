@@ -16,6 +16,7 @@ const Input = ({
    error,
    onChangeText,
    width,
+   autoCapitalize,
    ...others
 }) => {
    const [hidePassword, setHidePassword] = useState(password);
@@ -61,8 +62,10 @@ const Input = ({
                   }}
                   value={value}
                   placeholder={placeholder}
-                  secureTextEntry={hidePassword}
+                  secureTextEntry={password}
+                  // secureTextEntry={hidePassword}
                   onChangeText={onChangeText}
+                  autoCapitalize={autoCapitalize}
                   {...others}
                   // keyboardType='phone-pad'
                />
@@ -72,7 +75,7 @@ const Input = ({
                   displayLocation="Right"
                   iconFamily={iconFamily}
                   password={password}
-                  hidePassword={hidePassword}
+                  hidePassword={!hidePassword}
                   setHidePassword={setHidePassword}
                />
             )}

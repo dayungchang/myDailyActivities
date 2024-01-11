@@ -306,23 +306,7 @@ const ExerciseDetail = () => {
                <Text>Close Update Window</Text>
             </TouchableOpacity>
          </Modal>
-         <KeyboardAvoidingView>
-            <Modal
-               onRequestClose={() => setOpenAddExercise(false)}
-               visible={openAddExercise}
-               animationType="slideInUp"
-               animationOut="slideOutDown"
-               backdropColor={COLORS.white}
-               coverScreen={true}
-               backdropOpacity={0.8}
-            >
-               <ExerciseAdd
-                  values={values}
-                  setValues={setValues}
-                  setOpenAddExercise={setOpenAddExercise}
-               />
-            </Modal>
-         </KeyboardAvoidingView>
+
          <KeyboardAvoidingView>
             <Modal
                onRequestClose={() => setOpenRoutineDialog(false)}

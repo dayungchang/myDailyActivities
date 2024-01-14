@@ -7,6 +7,10 @@
          "developmentClient": true,
          "distribution": "internal"
       },
+      "preview005": {
+         "distribution": "internal"
+         //  "_comment": "See if able to add blender into the app"
+      },
       "preview004": {
          "distribution": "internal"
          //  "_comment": "Enhance Exercise"

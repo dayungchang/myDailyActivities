@@ -13,6 +13,9 @@ import Input from "../../components/controls/Input";
 import Button from "../../components/controls/Button";
 import { useState } from "react";
 import AuthSchema from "../../data/schemas/AuthSchema";
+import { auth, db } from "../../data/Firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 const Register = () => {
    const navigation = useNavigation();
@@ -36,15 +39,20 @@ const Register = () => {
       if ("name" in fieldValues)
          temp.name = fieldValues.name ? "" : "Name is required";
       if ("eMail" in fieldValues)
-         temp.eMail = /$^|.+@.+..+/.test(fieldValues.eMail)
-            ? ""
-            : "Email is not valid.";
+         if (fieldValues.eMail) {
+            temp.eMail = /$^|.+@.+..+/.test(fieldValues.eMail)
+               ? ""
+               : "Email is not valid.";
+         } else {
+            temp.eMail = "eMail is required";
+         }
+
       if ("phone" in fieldValues)
          temp.phone =
             fieldValues.phone.length > 9 ? "" : "Minimum 10 numbers required.";
       if ("password" in fieldValues)
          temp.password =
-            fieldValues.password.length < 8
+            fieldValues.password.length >= 8
                ? ""
                : "Minimum 8 characters required.";
       if ("confirmPassword" in fieldValues)
@@ -59,7 +67,37 @@ const Register = () => {
    const handleLoginPressed = () => {
       navigation.goBack();
    };
-   const handleRegisterPressed = () => {};
+   const handleRegisterPressed = () => {
+      if (validate()) {
+         createUserWithEmailAndPassword(auth, values.eMail, values.password)
+            .then((userCredential) => {
+               const userUID = auth.currentUser.uid;
+               setDoc(doc(db, "user", `${userUID}`), values)
+                  .then(() => {
+                     // State store
+                     // dispatch(saveUserInfo(values));
+                     alert("User record inserted ...");
+                     navigation.goBack();
+                  })
+                  .catch((err) => {
+                     alert(err.code);
+                  });
+               // const colRef = collection(db, "user");
+               // addDoc(colRef, values).then(() => {});
+            })
+            .catch((err) => {
+               if (err.code == "auth/email-already-in-use") {
+                  alert("The email address is already in use");
+               } else if (err.code == "auth/invalid-email") {
+                  alert("The email address is not valid.");
+               } else if (err.code == "auth/operation-not-allowed") {
+                  alert("Operation not allowed.");
+               } else if (err.code == "auth/weak-password") {
+                  alert("The password is too weak.");
+               }
+            });
+      }
+   };
    return (
       <View style={{ alignItems: "center" }}>
          <View style={{ alignItems: "center", margin: 20 }}>
@@ -112,6 +150,7 @@ const Register = () => {
                         handleInputs({ name: "name", value: text })
                      }
                      width={280}
+                     autoCapitalize="words"
                   />
                   <Input
                      label="eMail"

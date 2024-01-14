@@ -74,7 +74,9 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
          }}
       >
          <View style={{ justifyContent: "center", marginRight: 10 }}>
-            <RoutineImage imageName={record.name} />
+            <RoutineImage
+               imageName={record.name.replace(/\s/g, "").toLowerCase()}
+            />
          </View>
          <View>
             <View

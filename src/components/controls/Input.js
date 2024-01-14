@@ -1,25 +1,62 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import IconFA from "react-native-vector-icons/FontAwesome";
 import { useState } from "react";
+import {
+   StyleSheet,
+   Text,
+   TextInput,
+   TouchableOpacity,
+   View,
+} from "react-native";
 import COLORS from "../../constants/COLORS";
 import DisplayIcon from "../DisplayIcon";
 
 const Input = ({
-   label = "Empty label",
+   label = "",
    value,
    iconName,
    iconFamily,
+   actionIconName = "",
+   actionIconFamily,
+   secondActionIconName = "",
+   secondActionIconFamily,
+   onActionClicked,
    placeholder,
    password = false,
    error,
    onChangeText,
    width,
-   autoCapitalize,
+   autoCapitalize = "none",
+   keyboardType = "default",
    ...others
 }) => {
+   const [actionIcon, setActionIcon] = useState(actionIconName);
+   const [actionFamily, setActionFamily] = useState(actionIconFamily);
+   const [previousState, setPreviousState] = useState(false);
    const [hidePassword, setHidePassword] = useState(password);
+
+   const handleActionIconClicked = () => {
+      // Right icon available
+      setPreviousState((prevValue) => !prevValue);
+      if (password) setHidePassword((prevState) => !prevState);
+
+      if (previousState) {
+         setActionIcon(secondActionIconName);
+         setActionFamily(secondActionIconFamily);
+      } else {
+         setActionIcon(actionIconName);
+         setActionFamily(actionIconFamily);
+      }
+      if (onActionClicked) {
+         console.log("onActionClicked");
+         {
+            onActionClicked();
+         }
+
+         // onActionClicked();
+      }
+   };
+   const handleShowPasswordClicked = () => {
+      setHidePassword((prevState) => !prevState);
+   };
    return (
       <View
          style={{
@@ -36,6 +73,7 @@ const Input = ({
          >
             {label}
          </Text>
+         {/* {console.log(label, "autoCapitalize", autoCapitalize)} */}
          <View
             style={{
                flexDirection: "row",
@@ -47,14 +85,14 @@ const Input = ({
             <View flexDirection="row">
                <View style={{ width: iconName ? 30 : 0, alignItems: "center" }}>
                   <DisplayIcon
-                     displayLocation="Left"
                      iconName={iconName}
                      iconFamily={iconFamily}
                      password={password}
                      hidePassword={true}
-                     onPress={() => {}}
+                     onPress={() => handleActionIconClicked()}
                   />
                </View>
+               <Text></Text>
                <TextInput
                   style={{
                      color: COLORS.black,
@@ -62,22 +100,24 @@ const Input = ({
                   }}
                   value={value}
                   placeholder={placeholder}
-                  secureTextEntry={password}
-                  // secureTextEntry={hidePassword}
+                  secureTextEntry={hidePassword}
                   onChangeText={onChangeText}
                   autoCapitalize={autoCapitalize}
+                  keyboardType={keyboardType}
                   {...others}
-                  // keyboardType='phone-pad'
                />
             </View>
-            {password && (
-               <DisplayIcon
-                  displayLocation="Right"
-                  iconFamily={iconFamily}
-                  password={password}
-                  hidePassword={!hidePassword}
-                  setHidePassword={setHidePassword}
-               />
+            {actionIconName && (
+               <TouchableOpacity
+                  onPress={() => {
+                     handleActionIconClicked();
+                  }}
+               >
+                  <DisplayIcon
+                     iconName={actionIcon}
+                     iconFamily={actionFamily}
+                  />
+               </TouchableOpacity>
             )}
          </View>
          {error && (

@@ -1,8 +1,8 @@
 export default FocusArea = [
-   { label: "Full Body", value: "Full_Body", routines: [] },
+   { label: "Full Body", value: "Full Body", routines: [] },
    {
       label: "ABS Beginner",
-      value: "ABS_Beginner",
+      value: "ABS Beginner",
       routines: [
          {
             label: "Hanging knee raise",
@@ -61,8 +61,8 @@ export default FocusArea = [
       ],
    },
    {
-      label: "ARM Beginner",
-      value: "ARM_Beginner",
+      label: "ARM Exercise",
+      value: "ARM Exercise",
       routines: [
          {
             label: "Biceps curl",
@@ -109,7 +109,7 @@ export default FocusArea = [
    },
    {
       label: "Chest Beginner1",
-      value: "Chest_Beginner1",
+      value: "Chest Beginner1",
       routines: [
          {
             label: "Dumbbell bench press",
@@ -133,7 +133,7 @@ export default FocusArea = [
    },
    {
       label: "Chest Beginner",
-      value: "Chest_Beginner",
+      value: "Chest Beginner",
       routines: [
          {
             label: "Box squats",
@@ -203,7 +203,7 @@ export default FocusArea = [
    },
 ];
 
-export const ABS_Beginner = [
+export const ABSBeginner = [
    {
       label: "Hanging knee raise",
       value: "Hanging knee raise",
@@ -259,7 +259,7 @@ export const ABS_Beginner = [
          "This exercise is a classic core stabilizer and can be done on your elbows or hands.",
    },
 ];
-export const ARM_Beginner = [
+export const ARMExercise = [
    {
       label: "Biceps curl",
       value: "Biceps curl",
@@ -302,7 +302,7 @@ export const ARM_Beginner = [
          "Adjust the seat height so that it is comfortable for you. Complete the exercise by pushing the handles together in front of your chest.",
    },
 ];
-export const Chest_Beginner = [
+export const ChestBeginner = [
    {
       label: "Dumbbell bench press",
       value: "Dumbbell bench press",
@@ -322,7 +322,7 @@ export const Chest_Beginner = [
          "Complete ten pushups, or as many as you can in 2 minutes including rests. You can also vary this movement with wider arm placements to work a different part of the chest or keep your elbows at your sides to engage the triceps",
    },
 ];
-export const Chest_Beginner1 = [
+export const ChestBeginner1 = [
    {
       label: "Box squats",
       value: "Box squats",

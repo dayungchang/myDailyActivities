@@ -7,6 +7,7 @@ export default function App() {
    return (
       <SafeAreaView style={[styles.container, styles.androidSafeArea]}>
          <NavigationContainer>
+            <StatusBar style="dark" />
             <LoginStackNavigation />
          </NavigationContainer>
       </SafeAreaView>
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
    androidSafeArea: {
       flex: 1,
       backgroundColor: "#fff",
-      // paddingTop: Platform.OS === "android" ? 30 : 0,
+      paddingTop: Platform.OS === "android" ? 50 : 0,
    },
 });
 

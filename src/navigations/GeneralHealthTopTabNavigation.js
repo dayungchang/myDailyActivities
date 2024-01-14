@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/controls/NavBar";
 import GeneralHealth from "../screens/generalHealth/GeneralHealth";
 import BloodPressure from "../screens/generalHealth/BloodPressure";
 import Step from "../screens/generalHealth/Step";

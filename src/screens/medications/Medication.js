@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+   ScrollView,
+   StyleSheet,
+   Text,
+   TouchableOpacity,
+   View,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Feather } from "@expo/vector-icons";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { auth, db } from "../../data/Firebase";
 import Button from "../../components/controls/Button";
 import MedicationCard from "../../components/MedicationCard";
 import NavBar from "../../components/controls/NavBar";
 import MedicationSchema from "../../data/schemas/MedicationSchema";
+import COLORS from "../../constants/COLORS";
+import DisplayIcon from "../../components/DisplayIcon";
 
+// List of drug - https://www.drugs.com/
 const Medication = () => {
    const navigation = useNavigation();
 
@@ -49,20 +59,7 @@ const Medication = () => {
             title="Medication"
             backScreen="Home"
          />
-         <View
-            style={{
-               marginTop: 10,
-               marginRight: 20,
-               height: 60,
-               alignItems: "flex-end",
-            }}
-         >
-            <Button
-               label="+ Medication"
-               width={150}
-               onPress={() => handleAddMedication()}
-            />
-         </View>
+
          {medicationRecs ? (
             <ScrollView style={{ marginHorizontal: 10 }}>
                {medicationRecs.length > 0 ? (
@@ -91,6 +88,33 @@ const Medication = () => {
                )}
             </View>
          )}
+         <View
+            style={{
+               position: "absolute",
+               right: 0,
+               bottom: 20,
+               alignItems: "flex-end",
+            }}
+         >
+            <TouchableOpacity
+               style={{
+                  marginRight: 30,
+                  marginBottom: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: COLORS.lightBlue01,
+                  borderRadius: 30,
+               }}
+               // onPress={() => handleAddMedication()}
+            >
+               <DisplayIcon
+                  iconName="pluscircleo"
+                  iconFamily="AntDesign"
+                  size={60}
+                  color={COLORS.appBackground}
+               />
+            </TouchableOpacity>
+         </View>
       </View>
    );
 };

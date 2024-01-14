@@ -10,7 +10,8 @@ import { addDoc, collection } from "firebase/firestore";
 import { db } from "../data/Firebase";
 
 const RoutineSetDialog = ({
-   routineValues,
+   routineRec,
+   exerciseRec,
    setShowRoutineSetDialog,
    showRoutineSetDialog,
 }) => {
@@ -18,7 +19,6 @@ const RoutineSetDialog = ({
    const currentRoutine = useExerciseStore((state) => state.currentRoutine);
 
    const [values, setValues] = useState({
-      ...routineValues,
       ["routineName"]: "",
       ["routineWeight"]: "",
       ["routineReps"]: "",
@@ -35,14 +35,16 @@ const RoutineSetDialog = ({
    };
    const handleSaveClicked = () => {
       //github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
+      console.log("values - inside handleSaveClicked", values);
+
       const colRef = collection(db, "routineSet");
       addDoc(colRef, {
-         exerciseUID: currentExercise.id,
+         exerciseUID: exerciseRec.id,
          feeling: values.feeling,
          reps: values.routineReps,
-         routineUID: currentRoutine.id,
-         setDate: new Date(),
-         userUID: currentExercise.userUID,
+         routineUID: routineRec.id,
+         setDate: Date.now(),
+         userUID: exerciseRec.userUID,
          weight: values.routineWeight,
       }).then(() => {
          setShowRoutineSetDialog(false);
@@ -51,7 +53,10 @@ const RoutineSetDialog = ({
    const handleCancelClicked = () => {
       setShowRoutineSetDialog(false);
    };
-   useEffect(() => {}, []);
+   useEffect(() => {
+      console.log("exerciseRec", exerciseRec);
+      console.log("routineRec", routineRec);
+   }, []);
 
    return (
       <View
@@ -105,7 +110,7 @@ const RoutineSetDialog = ({
                         handleInputs({ name: "routineWeight", value: text })
                      }
                      width={225}
-                     keyboardType="numeric"
+                     keyboardType="number-pad"
                   />
                   <Input
                      label="Reps"

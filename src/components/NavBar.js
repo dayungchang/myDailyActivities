@@ -11,6 +11,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import GlobalStyle from "../styles/GlobalStyle";
 import COLORS from "../constants/COLORS";
 import Typography from "../components/controls/Typography";
+import { signOut } from "firebase/auth";
+import { auth } from "../data/Firebase";
 
 const NavBar = ({ title, backScreen }) => {
    const navigation = useNavigation();
@@ -21,6 +23,15 @@ const NavBar = ({ title, backScreen }) => {
    const handleMenuPressed = () => {
       if (title === "myDailyActivities") Alert.alert("Home menu pressed");
       else navigation.goBack();
+   };
+   const handleLogout = () => {
+      signOut(auth)
+         .then(() => {
+            navigation.replace("Login");
+         })
+         .catch((err) => {
+            console.log(err);
+         });
    };
    return (
       <View>
@@ -60,7 +71,7 @@ const NavBar = ({ title, backScreen }) => {
                   },
                ]}
             >
-               <TouchableOpacity>
+               <TouchableOpacity onPress={() => handleLogout()}>
                   <Typography
                      style={{
                         fontWeight: "bold",

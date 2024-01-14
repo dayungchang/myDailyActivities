@@ -34,7 +34,7 @@ const MedicationDetail = () => {
          return Object.values(temp).every((x) => x === "");
    };
    const handleCancelButtonPressed = () => {
-      // navigation.goBack();
+      navigation.goBack();
    };
    const handleSaveButtonPressed = async () => {
       if (validate()) {
@@ -81,6 +81,8 @@ const MedicationDetail = () => {
                      handleInputs({ name: "medication", value: text })
                   }
                   width={280}
+                  autoCapitalize={"words"}
+                  autoCorrect={false}
                />
                <Input
                   label="Instruction"

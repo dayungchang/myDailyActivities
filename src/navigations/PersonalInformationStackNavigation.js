@@ -1,28 +1,24 @@
-import { StyleSheet, Text, View } from "react-native";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import NavBar from "../components/controls/NavBar";
+import { StyleSheet } from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import PersonalInformation from "../screens/personalInformation/PersonalInformation";
-import InsuranceInformation from "../screens/personalInformation/InsuranceInformation";
+import FamilyFriends from "../screens/personalInformation/FamilyFriends";
 
 const PersonalInformationStackNavigation = () => {
-   const tab = createMaterialTopTabNavigator();
+   const stack = createNativeStackNavigator();
    return (
-      <View style={{ flex: 1 }}>
-         <NavBar
-            title="Information"
-            backScreen="Home"
+      <stack.Navigator
+         initialRouteName="personal"
+         screenOptions={{ headerShown: false }}
+      >
+         <stack.Screen
+            name="personal"
+            component={PersonalInformation}
          />
-         <tab.Navigator initialRouteName="personalInformation">
-            <tab.Screen
-               name="personal"
-               component={PersonalInformation}
-            />
-            <tab.Screen
-               name="insurance"
-               component={InsuranceInformation}
-            />
-         </tab.Navigator>
-      </View>
+         <stack.Screen
+            name="familyAndFriends"
+            component={FamilyFriends}
+         />
+      </stack.Navigator>
    );
 };
 

@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Exercise from "../screens/exercises/Exercise";
 import ExerciseDetail from "../screens/exercises/ExerciseDetail";
+import RoutineSelect from "../screens/exercises/RoutineSelect";
 
 const ExerciseStackNavigation = () => {
    const stack = createNativeStackNavigator();
@@ -16,6 +17,11 @@ const ExerciseStackNavigation = () => {
             <stack.Screen
                name="exerciseDetail"
                component={ExerciseDetail}
+               options={{ headerShown: false }}
+            />
+            <stack.Screen
+               name="routineSelect"
+               component={RoutineSelect}
                options={{ headerShown: false }}
             />
          </stack.Navigator>

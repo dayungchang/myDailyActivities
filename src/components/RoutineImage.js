@@ -3,31 +3,13 @@ import Images from "../constants/Images";
 
 const RoutineImage = ({ imageName }) => {
    return (
-      <View>
-         {imageName === "Treadmill" && (
-            <View style={{ justifyContent: "center", marginRight: 10 }}>
-               <Image
-                  source={Images.treadmill}
-                  style={{ width: 50, height: 50 }}
-               />
-            </View>
-         )}
-         {imageName === "Bicep Curl" && (
-            <View style={{ justifyContent: "center", marginRight: 10 }}>
-               <Image
-                  source={Images.bicep_curl}
-                  style={{ width: 50, height: 50 }}
-               />
-            </View>
-         )}
-         {imageName === "Chest Press" && (
-            <View style={{ justifyContent: "center", marginRight: 10 }}>
-               <Image
-                  source={Images.chest_press}
-                  style={{ width: 50, height: 50 }}
-               />
-            </View>
-         )}
+      <View style={{ justifyContent: "center", marginRight: 10 }}>
+         {console.log(imageName)}
+
+         <Image
+            source={Images[imageName]}
+            style={{ width: 50, height: 50 }}
+         />
       </View>
    );
 };

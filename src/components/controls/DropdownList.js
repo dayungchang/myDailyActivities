@@ -23,6 +23,10 @@ const DropdownList = ({
    const [value, setValue] = useState(selectedValue);
 
    const [pickerWidth, setPickerWidth] = useState(width - 20);
+   useEffect(() => {
+      console.log("********* DropdownList **********");
+      console.log("items", items);
+   }, []);
 
    return (
       <View
@@ -50,7 +54,6 @@ const DropdownList = ({
                   }}
                >
                   <DisplayIcon
-                     displayLocation="Left"
                      iconName={iconName}
                      iconFamily={iconFamily}
                      password={false}

@@ -99,16 +99,15 @@ const Exercise = () => {
                }}
             >
                <View style={{ paddingVertical: 20 }}>
-                  {exerciseRecs &&
-                     (exerciseRecs.length > 0 ? (
-                        exerciseRecs.map((exercise, index) => (
-                           <View key={index}>
-                              <ExerciseCard exerciseRec={exercise} />
-                           </View>
-                        ))
-                     ) : (
-                        <Text>No exercise exists</Text>
-                     ))}
+                  {exerciseRecs ? (
+                     exerciseRecs.map((exercise, index) => (
+                        <View key={index}>
+                           <ExerciseCard exerciseRec={exercise} />
+                        </View>
+                     ))
+                  ) : (
+                     <Text>No exercise exists</Text>
+                  )}
                </View>
             </View>
          </ScrollView>
@@ -158,16 +157,34 @@ const Exercise = () => {
 
 const NewExercise = ({ setOpenNewExercise }) => {
    const navigation = useNavigation();
-
+   // **************************************************
    const [values, setValues] = useState(ExerciseSchema);
    const [errors, setErrors] = useState({});
    const [items, setItems] = useState(FocusArea);
-   const [dateString, setDateString] = useState("1/5/2024");
-   const [timeString, settimeString] = useState("8:00 AM");
+   const [dateString, setDateString] = useState("");
+   const [timeString, setTimeString] = useState("");
+   // **************************************************
+   const validate = (fieldValues = values) => {
+      let temp = { ...errors };
+      console.log("fieldValues", fieldValues);
 
+      if ("locationName" in fieldValues)
+         temp.locationName = fieldValues.locationName
+            ? ""
+            : "Location is required";
+      if ("weight" in fieldValues)
+         temp.weight = fieldValues.weight ? "" : "Weight is required";
+      if ("focusArea" in fieldValues)
+         temp.weight = fieldValues.focusArea ? "" : "Area of focus is required";
+      setErrors({ ...temp });
+      if (fieldValues === values)
+         return Object.values(temp).every((x) => x === "");
+   };
    const handleInputs = (e) => {
       const { name, value } = e;
+
       setValues({ ...values, [name]: value });
+      validate({ [name]: value });
    };
    const handleFeelingPressed = ({ selectedValue }) => {
       setValues({ ...values, ["feeling"]: selectedValue });
@@ -176,7 +193,7 @@ const NewExercise = ({ setOpenNewExercise }) => {
       const colRef = collection(db, "exercise");
       addDoc(colRef, values).then((res) => {
          setOpenNewExercise(false);
-         let temp = { ...values, ["exerciseUID"]: res.id };
+         let temp = { ...values, ["id"]: res.id };
          navigation.navigate("exerciseDetail", { exerciseRec: temp });
       });
    };
@@ -190,13 +207,15 @@ const NewExercise = ({ setOpenNewExercise }) => {
          ...values,
          locationName: "Planet Fittness",
          userUID: auth.currentUser.uid,
-         exerciseDate: new Date(),
+         exerciseDate: Date.now(),
       });
+      setDateString(DateString(Date.now()));
+      setTimeString(TimeSting(Date.now()));
       // let temp = items.filter((item) => item.value === "ABS Beginner");
       // console.log("temp", temp);
       // console.log("temp.routines", temp[0].routines);
    }, []);
-
+   // **************************************************
    return (
       <View
          style={[
@@ -247,7 +266,7 @@ const NewExercise = ({ setOpenNewExercise }) => {
                value={values.weight}
                iconName="weight"
                iconFamily="FontAwesome5"
-               error={errors.location}
+               error={errors.weight}
                placeholder="Your body weight"
                onChangeText={(text) =>
                   handleInputs({ name: "weight", value: text })
@@ -260,17 +279,14 @@ const NewExercise = ({ setOpenNewExercise }) => {
                label="Focus Area"
                selectedValue={values.focusArea}
                setSelectedValue={(value) =>
-                  setValues({ ...values, focusArea: value })
+                  handleInputs({ name: "focusArea", value: value })
                }
                items={items}
                setItems={setItems}
                iconName="lock-outline"
                iconFamily="MaterialCommunityIcons"
                placeholder="Area of focus"
-               // error={errors.test}
-               onChangeValue={(value) =>
-                  handleInputs({ name: "test", value: value })
-               }
+               error={errors.focusArea}
                width={225}
                dropDownDirection="TOP"
             />
@@ -467,12 +483,8 @@ const ExerciseCard = ({ exerciseRec }) => {
       (state) => state.setCurrentExercise
    );
 
-   const [exerciseDateString, setExerciseDateString] = useState(
-      DateString(exerciseRec.exerciseDate)
-   );
-   const [exerciseTimeString, setExerciseTimeString] = useState(
-      TimeSting(exerciseRec.exerciseDate)
-   );
+   const [exerciseDateString, setExerciseDateString] = useState("");
+   const [exerciseTimeString, setExerciseTimeString] = useState("");
    const [routineRecs, setRoutineRecs] = useState([]);
    const [routineCount, setRoutineCount] = useState(0);
    const [showDetail, setShowDetail] = useState(false);
@@ -522,6 +534,8 @@ const ExerciseCard = ({ exerciseRec }) => {
       });
    };
    useEffect(() => {
+      setExerciseDateString(DateString(exerciseRec.exerciseDate));
+      setExerciseTimeString(TimeSting(exerciseRec.exerciseDate));
       fetchRoutinesByExercise();
    }, []);
 

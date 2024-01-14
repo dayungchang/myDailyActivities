@@ -34,7 +34,6 @@ import COLORS from "../../constants/COLORS";
 import GlobalStyle from "../../styles/GlobalStyle";
 import ExerciseSchema from "../../data/schemas/ExerciseSchema";
 import Images from "../../constants/Images";
-import RoutineCard from "../../components/RoutineCard";
 import ExerciseEquipment from "../../data/meta/ExerciseEquipment";
 import Likes from "../../components/Likes";
 import Picker from "../../components/controls/Picker";
@@ -52,6 +51,7 @@ import FocusArea, {
 } from "../../data/meta/FocusArea";
 import DropdownList from "../../components/controls/DropdownList";
 import ButtonOnOff from "../../components/controls/ButtonOnOff";
+import RoutineImage from "../../components/RoutineImage";
 
 const ExerciseDetail = () => {
    const navigation = useNavigation();
@@ -65,11 +65,12 @@ const ExerciseDetail = () => {
    let focusAreaSelect = route.params.exerciseRec.focusArea;
 
    const [values, setValues] = useState(route.params.exerciseRec);
-   const [routines, setRoutines] = useState(focusAreaSelect);
+
+   const [routineRec, setRoutineRec] = useState([]);
+   const [routineRecs, setRoutineRecs] = useState([]);
    const [focusAreas, setFocusAreas] = useState(FocusArea);
    const [openAddExercise, setOpenAddExercise] = useState(false);
    // const userState = useSelector((state) => state.user.data);
-   const [routineRecs, setRoutineRecs] = useState(route.params.routineRecs);
    const [errors, setErrors] = useState({});
    const [value, setValue] = useState(null);
    const [isFocus, setIsFocus] = useState(false);
@@ -87,13 +88,18 @@ const ExerciseDetail = () => {
 
    const currentDate = new Date();
    let todate = new Date();
-   const fetchRoutine = () => {
+
+   // https://www.youtube.com/watch?v=O8q8H9c9XZ4
+   // Adding blender to the app
+
+   const fetchRoutineRec = () => {
       // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
+      console.log("values", values);
 
       const colRef = collection(db, "routine");
       const qPull = query(
          colRef,
-         where("exerciseUID", "==", values.exerciseUID),
+         where("exerciseUID", "==", values.id),
          orderBy("routineDate", "desc")
       );
       onSnapshot(qPull, (snapshot) => {
@@ -121,7 +127,10 @@ const ExerciseDetail = () => {
       navigation.goBack();
    };
    const handleAddRoutinePressed = () => {
-      setOpenRoutineDialog(true);
+      // setOpenRoutineDialog(true);
+      console.log("values before calling RoutineSelect", values);
+
+      navigation.navigate("routineSelect", { exerciseRec: values });
    };
    const handleSelectRotuine = () => {
       setOpenRoutinePicker(false);
@@ -131,11 +140,11 @@ const ExerciseDetail = () => {
          (item) => item.value === values.focusArea
       );
       console.log("Parameter: ", route.params.exerciseRec.focusArea);
-      console.log("routines: ", routines);
       // setRoutines(focusRoutines[0].routines);
       // if (focusRoutines[0]) setValues({ ...values, ["routines"]: routines });
       // console.log("values - ExerciseDetail", values);
-      // fetchRoutine();
+
+      fetchRoutineRec();
    }, [currentRoutine]);
 
    return (
@@ -254,12 +263,13 @@ const ExerciseDetail = () => {
                      marginHorizontal: 10,
                   }}
                >
-                  {/* {routineRecs.length > 0 ? (
+                  {routineRecs.length > 0 ? (
                      routineRecs.map((routine, index) => (
                         <View key={index}>
                            <RoutineCard
-                              record={routine}
+                              routineRec={routine}
                               index={index}
+                              setRoutineRec={setRoutineRec}
                               setShowRoutineSetDialog={setShowRoutineSetDialog}
                            />
                         </View>
@@ -268,7 +278,7 @@ const ExerciseDetail = () => {
                      <View style={{ margin: 20 }}>
                         <Text>No routine exists</Text>
                      </View>
-                  )} */}
+                  )}
                </View>
             </View>
          </ScrollView>
@@ -337,7 +347,6 @@ const ExerciseDetail = () => {
                <NewRoutine
                   exerciseRec={values}
                   setOpenRoutineDialog={setOpenRoutineDialog}
-                  routines={routines}
                />
             </Modal>
          </KeyboardAvoidingView>
@@ -349,8 +358,8 @@ const ExerciseDetail = () => {
                animationOut="slideOutDown"
             >
                <RoutineSetDialog
-                  values={values}
-                  setValues={setValues}
+                  routineRec={routineRec}
+                  exerciseRec={values}
                   setShowRoutineSetDialog={setShowRoutineSetDialog}
                   showRoutineSetDialog={showRoutineSetDialog}
                />
@@ -360,7 +369,10 @@ const ExerciseDetail = () => {
    );
 };
 
-const NewRoutine = ({ exerciseRec, setOpenRoutineDialog, routines }) => {
+// **************************************************
+// --------------------------------------------------
+// **************************************************
+const NewRoutine = ({ exerciseRec, setOpenRoutineDialog }) => {
    const currentExercise = useExerciseStore((state) => state.currentExercise);
    const currentRoutine = useExerciseStore((state) => state.currentRoutine);
    const setCurrentRoutine = useExerciseStore(
@@ -375,7 +387,7 @@ const NewRoutine = ({ exerciseRec, setOpenRoutineDialog, routines }) => {
    });
    const [errors, setErrors] = useState({});
    const [focusAreaRec, setFocusAreaRec] = useState(FocusArea);
-   const [routineList, setRoutineList] = useState([]);
+   const [routines, setRoutines] = useState([]);
 
    const handleFeelingPressed = ({ selectedValue }) => {
       setValues({ ...values, ["feeling"]: selectedValue });
@@ -424,16 +436,35 @@ const NewRoutine = ({ exerciseRec, setOpenRoutineDialog, routines }) => {
    const handleCancelClicked = () => {
       setOpenRoutineDialog(false);
    };
+   const fetchRoutines = () => {
+      // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
+      console.log("values.focusArea", values.focusArea);
+
+      const colRef = collection(db, "lookUp");
+      const qPull = query(
+         colRef,
+         where("type", "==", values.focusArea),
+         orderBy("label")
+      );
+      onSnapshot(qPull, (snapshot) => {
+         let records = [];
+         snapshot.docs.forEach((doc) => {
+            records.push({ ...doc.data(), id: doc.id });
+         });
+         setRoutines(records);
+         console.log("records --", records);
+         console.log("routines --", routines);
+      });
+   };
    useEffect(() => {
+      console.log("********** NewRoutine - ExerciseDatail **********");
+
       console.log("values", values);
       console.log("focusAreaRec", focusAreaRec);
       console.log("exerciseRec.focusArea", exerciseRec.focusArea);
-      console.log("routines", routines);
-      setRoutineList(
-         FocusArea.filter((data) => data.value === exerciseRec.focusArea)
-      );
-      // );
-      console.log("routineList", focusAreaRec[0].routines);
+
+      fetchRoutines();
+      console.log("routines - useEffect", routines);
    }, []);
    return (
       <View
@@ -494,8 +525,8 @@ const NewRoutine = ({ exerciseRec, setOpenRoutineDialog, routines }) => {
                   setSelectedValue={(value) =>
                      setValues({ ...values, focusArea: value })
                   }
-                  items={routineList}
-                  setItems={setRoutineList}
+                  items={routines}
+                  setItems={setRoutines}
                   iconName="lock-outline"
                   iconFamily="MaterialCommunityIcons"
                   placeholder="Name of routine"
@@ -508,12 +539,12 @@ const NewRoutine = ({ exerciseRec, setOpenRoutineDialog, routines }) => {
                />
                {/* <DropdownList /> */}
             </View>
-            <View style={{ marginHorizontal: 10 }}>
+            <View style={{ marginHorizontal: 10, margin: 20 }}>
                <Text
                   style={{
                      fontSize: 16,
                      fontWeight: "bold",
-                     justifyContent: "left",
+                     justifyContent: "flex-start",
                   }}
                >
                   Set # 1
@@ -581,6 +612,236 @@ const NewRoutine = ({ exerciseRec, setOpenRoutineDialog, routines }) => {
       </View>
    );
 };
+// **************************************************
+// --------------------------------------------------
+// **************************************************
+const RoutineCard = ({
+   routineRec,
+   index,
+   setRoutineRec,
+   setShowRoutineSetDialog,
+}) => {
+   const [values, setValues] = useState({});
+   const [routineSetRecs, setRoutineSetRecs] = useState([]);
+   const [routineSetCount, setRoutineSetCount] = useState(0);
+   const [showDetail, setShowDetail] = useState(false);
+
+   const currentExercise = useExerciseStore((state) => state.currentExercise);
+   const setCurrentRoutine = useExerciseStore(
+      (state) => state.setCurrentRoutine
+   );
+   // const [showRoutineSetDialog, setShowRoutineSetDialog] = useState(false);
+
+   const handleAddRoutineSet = () => {
+      setRoutineRec(routineRec);
+      setShowRoutineSetDialog(true);
+   };
+
+   const fetchRoutinesSetByRoutine = () => {
+      // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
+      console.log("routineRec", routineRec);
+
+      const colRef = collection(db, "routineSet");
+      const qPull = query(
+         colRef,
+         where("routineUID", "==", routineRec.id),
+         orderBy("setDate")
+      );
+
+      onSnapshot(qPull, (snapshot) => {
+         let records = [];
+         snapshot.docs.forEach((doc) => {
+            records.push({ ...doc.data(), id: doc.id });
+         });
+         setRoutineSetRecs(records);
+         setRoutineSetCount(records.length);
+      });
+   };
+
+   useEffect(() => {
+      fetchRoutinesSetByRoutine();
+   }, []);
+   return (
+      <View
+         key={{ index }}
+         style={{
+            flex: 1,
+            borderBottomWidth: 0.5,
+            padding: 10,
+            flexDirection: "row",
+         }}
+      >
+         <View style={{ justifyContent: "center", marginRight: 10 }}>
+            <RoutineImage
+               imageName={routineRec.name.replace(/\s/g, "").toLowerCase()}
+            />
+         </View>
+         <View>
+            <View
+               style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+               <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                  {routineRec.name}
+               </Text>
+               <Likes feelingCount={routineRec.feeling} />
+            </View>
+            <View style={{ flexDirection: "row", gap: 10, marginVertical: 10 }}>
+               <View
+                  style={{
+                     width: 100,
+                     justifyContent: "flex-end",
+                     flexDirection: "row",
+                  }}
+               >
+                  <Text>{routineRec.weight}</Text>
+                  <Text>lbs</Text>
+               </View>
+               <View
+                  style={{
+                     width: 100,
+                     justifyContent: "flex-end",
+                     flexDirection: "row",
+                  }}
+               >
+                  <Text>{routineRec.reps}</Text>
+                  <Text>x</Text>
+               </View>
+            </View>
+            <View
+               style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 15,
+                  justifyContent: "space-between",
+               }}
+            >
+               {routineSetCount > 0 ? (
+                  <TouchableOpacity
+                     onPress={() => setShowDetail(!showDetail)}
+                     style={{
+                        width: 50,
+                        padding: 2,
+                        backgroundColor: COLORS.grey,
+                        borderRadius: 15,
+                        flexDirection: "row",
+                        gap: 5,
+                        alignItems: "center",
+                        justifyContent: "center",
+                     }}
+                  >
+                     <Text style={{ fontSize: 16, textAlign: "center" }}>
+                        {routineSetCount}
+                     </Text>
+                     {showDetail ? (
+                        <Image
+                           source={Images.upArrow}
+                           style={{ width: 15, height: 15 }}
+                        />
+                     ) : (
+                        <Image
+                           source={Images.downArrow}
+                           style={{ width: 15, height: 15 }}
+                        />
+                     )}
+                  </TouchableOpacity>
+               ) : (
+                  <View></View>
+               )}
+               <TouchableOpacity
+                  onPress={handleAddRoutineSet}
+                  style={{
+                     padding: 2,
+                     paddingHorizontal: 15,
+                     backgroundColor: COLORS.grey,
+                     borderRadius: 15,
+                     flexDirection: "row",
+                     gap: 5,
+                     alignItems: "center",
+                     justifyContent: "center",
+                  }}
+               >
+                  <Text style={{ fontSize: 16, textAlign: "center" }}>
+                     + Set
+                  </Text>
+               </TouchableOpacity>
+            </View>
+            <View>
+               {showDetail && (
+                  <ScrollView
+                     style={{
+                        marginHorizontal: 10,
+                        marginTop: 5,
+                        borderWidth: 0.25,
+                        borderRadius: 7,
+                     }}
+                  >
+                     {routineSetRecs.length > 0 ? (
+                        routineSetRecs.map((routineSet, index) => (
+                           <View
+                              key={index}
+                              style={{
+                                 flexDirection: "row",
+                                 gap: 10,
+                                 padding: 1,
+                                 backgroundColor:
+                                    index % 2 === 0 ? COLORS.grey : null,
+                                 justifyContent: "space-between",
+                              }}
+                           >
+                              <View style={{ flexDirection: "row" }}>
+                                 <View style={{ marginHorizontal: 5 }}>
+                                    <Text>{index + 1}</Text>
+                                 </View>
+
+                                 {routineSet.weight ? (
+                                    <View style={{ width: 50 }}>
+                                       <Text style={{ textAlign: "right" }}>
+                                          {routineSet.weight}lbs
+                                       </Text>
+                                    </View>
+                                 ) : (
+                                    <View></View>
+                                 )}
+                                 {routineSet.reps ? (
+                                    <View style={{ width: 40 }}>
+                                       <Text style={{ textAlign: "right" }}>
+                                          {routineSet.reps}x
+                                       </Text>
+                                    </View>
+                                 ) : (
+                                    <View style={{ width: 40 }}></View>
+                                 )}
+                              </View>
+                              <Likes feelingCount={routineSet.feeling} />
+                           </View>
+                        ))
+                     ) : (
+                        <Text>No set exists</Text>
+                     )}
+                  </ScrollView>
+               )}
+            </View>
+         </View>
+         {/* <KeyboardAvoidingView>
+            <Modal
+               visible={showRoutineSetDialog}
+               onRequestClose={() => setShowRoutineSetDialog(false)}
+               animationType="slideInUp"
+               animationOut="slideOutDown"
+               presentationStyle="pageSheet"
+            >
+               <RoutineSetDialog
+                  values={values}
+                  setValues={setValues}
+                  setShowRoutineSetDialog={setShowRoutineSetDialog}
+                  showRoutineSetDialog={showRoutineSetDialog}
+               />
+            </Modal>
+         </KeyboardAvoidingView> */}
+      </View>
+   );
+};
+
 // userUID: "",
 //    locationUID: "",
 //    locationName: "",

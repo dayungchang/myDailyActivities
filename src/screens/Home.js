@@ -62,7 +62,7 @@ const Home = () => {
                   handleAppAccess={handleAppAccess}
                />
                <MenuItem
-                  screenName="personalInformationStackNavigation"
+                  screenName="personalInformationTabNavigation"
                   image={Images.personalInformation}
                   label="Personal Information"
                   handleAppAccess={handleAppAccess}

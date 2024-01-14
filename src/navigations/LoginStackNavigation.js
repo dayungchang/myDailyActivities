@@ -3,25 +3,30 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "../screens/auth/Login";
 import Register from "../screens/auth/Register";
 import HomeStackNavigation from "./HomeStackNavigation";
+import Try from "../screens/try/Try";
 
 const LoginStackNavigation = () => {
    const stack = createNativeStackNavigator();
    return (
       <stack.Navigator
-         initialRouteName="Login"
+         initialRouteName="login"
          screenOptions={{ headerShown: false }}
       >
          <stack.Screen
-            name="Login"
+            name="login"
             component={Login}
          />
          <stack.Screen
-            name="Register"
+            name="register"
             component={Register}
          />
          <stack.Screen
             name="HomeStackNavigation"
             component={HomeStackNavigation}
+         />
+         <stack.Screen
+            name="Try"
+            component={Try}
          />
       </stack.Navigator>
    );

@@ -49,7 +49,7 @@ const Login = () => {
          return Object.values(temp).every((x) => x === "");
    };
    const handleRegisterPressed = () => {
-      navigation.navigate("Register");
+      navigation.navigate("register");
    };
    const handleLoginPressed = async () => {
       if (validate()) {
@@ -116,6 +116,11 @@ const Login = () => {
                   value={values.password}
                   iconName="lock-outline"
                   iconFamily="MaterialCommunityIcons"
+                  actionIconName="eye-outline"
+                  actionIconFamily="Ionicons"
+                  secondActionIconName="eye-off-sharp"
+                  secondActionIconFamily="Ionicons"
+                  onActionClicked={false}
                   error={errors.password}
                   password={true}
                   placeholder="Password"
@@ -123,7 +128,6 @@ const Login = () => {
                      handleInputs({ name: "password", value: text })
                   }
                   width={280}
-                  keyboardType="email-address"
                />
             </View>
             <View style={{ marginTop: 50, alignItems: "center" }}>

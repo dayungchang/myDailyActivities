@@ -60,7 +60,7 @@ const FocusArea = () => {
          <NavBar
             title="Focus Area"
             backScreen="Admin"
-            backScreenPath="/admin"
+            backScreenPath="/(admin)\Admin"
          />
          <View>
             <Text>FocusArea</Text>

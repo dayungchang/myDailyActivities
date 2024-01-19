@@ -72,7 +72,7 @@ const Home = () => {
                   handleAppAccess={handleAppAccess}
                />
                <MenuItem
-                  screenName="\admin"
+                  screenName="\(admin)\Admin"
                   image={Images.personalInformation}
                   label="Adminstrative"
                   handleAppAccess={handleAppAccess}
@@ -132,4 +132,3 @@ const styles = StyleSheet.create({
       right: 16,
    },
 });
-

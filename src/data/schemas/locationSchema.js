@@ -1,0 +1,15 @@
+export default locationSchem = {
+   name: "",
+   description: "",
+   address: "",
+   image: "",
+   type: "",
+   latitude: "",
+   longitude: "",
+   accuracy: "",
+   altitude: "",
+   altitudeAccuracy: "",
+   heading: "",
+   createDT: "",
+   modifyDT: "",
+};

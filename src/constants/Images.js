@@ -1,33 +1,3 @@
-const backextension = require("../../assets/icons/exercise/backextension.png");
-const dependentcurl = require("../../assets/icons/exercise/dependentcurl.png");
-const myDailyActivities = require("../../assets/icons/myDailyActivities.png");
-const exercise = require("../../assets/icons/exercise.png");
-const medication = require("../../assets/icons/medication.png");
-const recipe = require("../../assets/icons/recipe.png");
-const downArrow = require("../../assets/icons/downArrow.png");
-const upArrow = require("../../assets/icons/upArrow.png");
-const thumbDown = require("../../assets/icons/thumbDown.png");
-const thumbUp = require("../../assets/icons/thumbUp.png");
-const routine = require("../../assets/icons/routine.png");
-const treadmill = require("../../assets/icons/treadmill.png");
-const bicepcurl = require("../../assets/icons/exercise/bicep_curl.png");
-const chestpress = require("../../assets/icons/exercise/chest_press.png");
-const star = require("../../assets/icons/star.png");
-const generalHealth = require("../../assets/icons/generalHealth.png");
-const diet = require("../../assets/icons/diet.png");
-const personalInformation = require("../../assets/icons/personalInformation.png");
-const calendar = require("../../assets/icons/calendar.png");
-const plus = require("../../assets/icons/plus.png");
-const dentalInsurance = require("../../assets/icons/dentalInsurance.png");
-const lifeInsruance = require("../../assets/icons/lifeInsruance.png");
-const shortTermDisability = require("../../assets/icons/shortTermDisability.png");
-const longTermDisability = require("../../assets/icons/longTermDisability.png");
-const pet = require("../../assets/icons/pet.png");
-const pecflyrearfelt = require("../../assets/icons/exercise/pECFlyRearDelt.png");
-const rotarytorso = require("../../assets/icons/exercise/rotarytorso.png");
-const tricepsextensions = require("../../assets/icons/exercise/tricepsextensions.jpg");
-const tricepspress = require("../../assets/icons/exercise/tricepspress.png");
-
 const Images = {
    abdominalcrunch: require("../../assets/icons/exercise/abdominalcrunch.jpg"),
    abrollout: require("../../assets/icons/exercise/abroll-out.jpg"),
@@ -49,10 +19,11 @@ const Images = {
    exerciseballpike: require("../../assets/icons/exercise/exerciseballpike.png"),
    familyAndFriends: require("../../assets/icons/familyAndFriends.png"),
    generalHealth: require("../../assets/icons/generalHealth.png"),
-   hangingkneeraise: require("../../assets/icons/exercise/hangingkneeraise.png"),
+   hangingKneeRaise: require("../../assets/icons/exercise/hangingKneeRaise.png"),
    lateralraise: require("../../assets/icons/exercise/Lateral_Raise.png"),
    latpulldown: require("../../assets/icons/exercise/Lat_Pulldown.png"),
    legpress: require("../../assets/icons/exercise/Leg_Press.png"),
+   location: require("../../assets/icons/exercise/location.png"),
    lifeInsruance: require("../../assets/icons/lifeInsruance.png"),
    longTermDisability: require("../../assets/icons/longTermDisability.png"),
    medication: require("../../assets/icons/medication.png"),
@@ -68,6 +39,7 @@ const Images = {
    routine: require("../../assets/icons/routine.png"),
    rotarytorso: require("../../assets/icons/exercise/rotarytorso.png"),
    seatedrow: require("../../assets/icons/exercise/Seated_Row.jpg"),
+   setup: require("../../assets/icons/setup.png"),
    shortTermDisability: require("../../assets/icons/shortTermDisability.png"),
    squatrussiantwist: require("../../assets/icons/exercise/squatrussiantwist.jpg"),
    star: require("../../assets/icons/star.png"),
@@ -80,4 +52,3 @@ const Images = {
 };
 
 export default Images;
-

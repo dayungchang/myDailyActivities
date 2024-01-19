@@ -28,9 +28,15 @@ const Admin = () => {
             <ScrollView>
                <View>
                   <MenuItem
-                     screenName="/admin/data"
+                     screenName="/(admin)/data"
                      image={Images.familyAndFriends}
                      label="Data Management"
+                     handleAppAccess={handleAppAccess}
+                  />
+                  <MenuItem
+                     screenName="/(admin)/setup"
+                     image={Images.setup}
+                     label="Application Setup"
                      handleAppAccess={handleAppAccess}
                   />
                </View>
@@ -63,7 +69,7 @@ const MenuItem = ({ screenName, image, label, handleAppAccess }) => (
       />
       <Text
          style={{
-            fontSize: 30,
+            fontSize: 24,
             fontWeight: 600,
             justifyContent: "center",
             marginHorizontal: 20,

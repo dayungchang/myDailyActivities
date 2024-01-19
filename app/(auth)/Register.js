@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
    Image,
    KeyboardAvoidingView,
@@ -7,19 +8,16 @@ import {
    TouchableOpacity,
    View,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import Images from "../../constants/Images";
-import Input from "../../components/controls/Input";
-import Button from "../../components/controls/Button";
-import { useState } from "react";
-import AuthSchema from "../../data/schemas/AuthSchema";
-import { auth, db } from "../../data/Firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import Images from "../../src/constants/Images";
+import Input from "../../src/components/controls/Input";
+import Button from "../../src/components/controls/Button";
+import { auth, db } from "../../src/data/Firebase";
+import AuthSchema from "../../src/data/schemas/AuthSchema";
+import { router } from "expo-router";
 
 const Register = () => {
-   const navigation = useNavigation();
-
    const [values, setValues] = useState(AuthSchema);
    const [errors, setErrors] = useState({});
    const [validateOnChange, setValidateOnChange] = useState(true);
@@ -65,7 +63,7 @@ const Register = () => {
          return Object.values(temp).every((x) => x === "");
    };
    const handleLoginPressed = () => {
-      navigation.goBack();
+      router.replace("/Login");
    };
    const handleRegisterPressed = () => {
       if (validate()) {
@@ -77,7 +75,7 @@ const Register = () => {
                      // State store
                      // dispatch(saveUserInfo(values));
                      alert("User record inserted ...");
-                     navigation.goBack();
+                     router.replace("/login");
                   })
                   .catch((err) => {
                      alert(err.code);

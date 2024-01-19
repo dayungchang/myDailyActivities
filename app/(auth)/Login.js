@@ -9,10 +9,12 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../data/Firebase";
-import Images from "../../constants/Images";
-import Input from "../../components/controls/Input";
-import Button from "../../components/controls/Button";
+import { auth } from "../../src/data/Firebase";
+import Images from "../../src/constants/Images";
+import Input from "../../src/components/controls/Input";
+import Button from "../../src/components/controls/Button";
+import { router } from "expo-router";
+import { useUserProfileStore } from "../../src/stores/UserStore";
 
 const loginInitialValues = {
    // eMail: "",
@@ -24,6 +26,7 @@ const loginInitialValues = {
 const Login = () => {
    const navigation = useNavigation();
 
+   const getUserInfo = useUserProfileStore((state) => state.getUserInfo);
    const [values, setValues] = useState(loginInitialValues);
    const [errors, setErrors] = useState({});
    const [validateOnChange, setValidateOnChange] = useState(true);
@@ -49,13 +52,14 @@ const Login = () => {
          return Object.values(temp).every((x) => x === "");
    };
    const handleRegisterPressed = () => {
-      navigation.navigate("register");
+      router.replace("/Register");
    };
    const handleLoginPressed = async () => {
       if (validate()) {
          await signInWithEmailAndPassword(auth, values.eMail, values.password)
             .then((userCredential) => {
-               navigation.replace("HomeStackNavigation");
+               getUserInfo(userCredential.user.uid);
+               router.replace("/Home");
             })
             .catch((error) => console.log(error));
       }

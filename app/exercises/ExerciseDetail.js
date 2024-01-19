@@ -9,7 +9,7 @@ import {
    TouchableOpacity,
    View,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import {
    addDoc,
    collection,
@@ -19,7 +19,7 @@ import {
    where,
 } from "firebase/firestore";
 import Modal from "react-native-modal";
-import { auth, db } from "../../data/Firebase";
+import { auth, db } from "../../src/data/Firebase";
 import { Feather } from "@expo/vector-icons";
 import {
    DateString,
@@ -28,43 +28,49 @@ import {
    dateFormat,
    dateTimeFormat,
    timeFormat,
-} from "../../utils/Library";
-import Button from "../../components/controls/Button";
-import COLORS from "../../constants/COLORS";
-import GlobalStyle from "../../styles/GlobalStyle";
-import ExerciseSchema from "../../data/schemas/ExerciseSchema";
-import Images from "../../constants/Images";
-import ExerciseEquipment from "../../data/meta/ExerciseEquipment";
-import Likes from "../../components/Likes";
-import Picker from "../../components/controls/Picker";
-import Input from "../../components/controls/Input";
-import ExerciseAdd from "../../components/ExerciseAdd";
-import RoutineDialog from "../../components/RoutineDialog";
-import RoutineSetDialog from "../../components/RoutineSetDialog";
-import { useExerciseStore } from "../../stores/ExerciseStore";
-import NavBar from "../../components/controls/NavBar";
+} from "../../src/utils/Library";
+import Button from "../../src/components/controls/Button";
+import COLORS from "../../src/constants/COLORS";
+import GlobalStyle from "../../src/styles/GlobalStyle";
+import ExerciseSchema from "../../src/data/schemas/ExerciseSchema";
+import Images from "../../src/constants/Images";
+import ExerciseEquipment from "../../src/data/meta/ExerciseEquipment";
+import Likes from "../../src/components/Likes";
+import Picker from "../../src/components/controls/Picker";
+import Input from "../../src/components/controls/Input";
+import ExerciseAdd from "../../src/components/ExerciseAdd";
+import RoutineDialog from "../../src/components/RoutineDialog";
+import RoutineSetDialog from "../../src/components/RoutineSetDialog";
+import { useExerciseStore } from "../../src/stores/ExerciseStore";
+import NavBar from "../../src/components/controls/NavBar";
 import FocusArea, {
    ABS_Beginner,
    ARM_Beginner,
    Chest_Beginner,
    Chest_Beginner1,
-} from "../../data/meta/FocusArea";
-import DropdownList from "../../components/controls/DropdownList";
-import ButtonOnOff from "../../components/controls/ButtonOnOff";
-import RoutineImage from "../../components/RoutineImage";
+} from "../../src/data/meta/FocusArea";
+import DropdownList from "../../src/components/controls/DropdownList";
+import ButtonOnOff from "../../src/components/controls/ButtonOnOff";
+import RoutineImage from "../../src/components/RoutineImage";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import DisplayIcon from "../../src/components/DisplayIcon";
 
 const ExerciseDetail = () => {
    const navigation = useNavigation();
-   const route = useRoute();
+   const router = useRouter();
+   const params = useLocalSearchParams();
+
+   // console.log("params", params);
+   // console.log("exerciseRec.id", params.id);
 
    const currentExercise = useExerciseStore((state) => state.currentExercise);
    const currentRoutine = useExerciseStore((state) => state.currentRoutine);
    const setCurrentExercise = useExerciseStore(
       (state) => state.setCurrentExercise
    );
-   let focusAreaSelect = route.params.exerciseRec.focusArea;
+   let focusAreaSelect = params.focusArea;
 
-   const [values, setValues] = useState(route.params.exerciseRec);
+   const [values, setValues] = useState(params);
 
    const [routineRec, setRoutineRec] = useState([]);
    const [routineRecs, setRoutineRecs] = useState([]);
@@ -94,12 +100,12 @@ const ExerciseDetail = () => {
 
    const fetchRoutineRec = () => {
       // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
-      console.log("values", values);
+      // console.log("values", params.id);
 
       const colRef = collection(db, "routine");
       const qPull = query(
          colRef,
-         where("exerciseUID", "==", values.id),
+         where("exerciseUID", "==", params.id),
          orderBy("routineDate", "desc")
       );
       onSnapshot(qPull, (snapshot) => {
@@ -128,9 +134,13 @@ const ExerciseDetail = () => {
    };
    const handleAddRoutinePressed = () => {
       // setOpenRoutineDialog(true);
-      console.log("values before calling RoutineSelect", values);
+      // console.log("values before calling RoutineSelect", values);
 
-      navigation.navigate("routineSelect", { exerciseRec: values });
+      router?.push({
+         pathname: "/exercises/RoutineSelect",
+         params: (exerciseRec = values),
+      });
+      // navigation.navigate("routineSelect", { exerciseRec: values });
    };
    const handleSelectRotuine = () => {
       setOpenRoutinePicker(false);
@@ -139,7 +149,7 @@ const ExerciseDetail = () => {
       let focusRoutines = focusAreas.filter(
          (item) => item.value === values.focusArea
       );
-      console.log("Parameter: ", route.params.exerciseRec.focusArea);
+      // console.log("Parameter: ", params.focusArea);
       // setRoutines(focusRoutines[0].routines);
       // if (focusRoutines[0]) setValues({ ...values, ["routines"]: routines });
       // console.log("values - ExerciseDetail", values);
@@ -152,6 +162,7 @@ const ExerciseDetail = () => {
          <NavBar
             title="Detail"
             backScreen="Exercise"
+            backScreenPath="/exercises"
          />
          <TouchableOpacity onPress={() => setOpenExerciseUpdate(true)}>
             <View
@@ -286,27 +297,27 @@ const ExerciseDetail = () => {
          {!openAddExercise && (
             <View
                style={{
-                  flex: 0.1,
+                  position: "absolute",
+                  right: 0,
+                  bottom: 20,
                   alignItems: "flex-end",
-                  marginHorizontal: 20,
                }}
             >
                <TouchableOpacity
                   style={{
-                     width: 50,
-                     height: 50,
-                     marginTop: -80,
-                     marginRight: 20,
+                     marginRight: 30,
+                     marginBottom: 20,
                      alignItems: "center",
                      justifyContent: "center",
-                     backgroundColor: COLORS.lighterGrey,
-                     borderRadius: 24,
+                     backgroundColor: COLORS.lightBlue01,
+                     borderRadius: 30,
                   }}
                   onPress={handleAddRoutinePressed}
                >
-                  <Feather
-                     name="plus-circle"
-                     size={46}
+                  <DisplayIcon
+                     iconName="pluscircleo"
+                     iconFamily="AntDesign"
+                     size={60}
                      color={COLORS.appBackground}
                   />
                </TouchableOpacity>
@@ -438,7 +449,7 @@ const NewRoutine = ({ exerciseRec, setOpenRoutineDialog }) => {
    };
    const fetchRoutines = () => {
       // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
-      console.log("values.focusArea", values.focusArea);
+      // console.log("values.focusArea", values.focusArea);
 
       const colRef = collection(db, "lookUp");
       const qPull = query(
@@ -452,19 +463,19 @@ const NewRoutine = ({ exerciseRec, setOpenRoutineDialog }) => {
             records.push({ ...doc.data(), id: doc.id });
          });
          setRoutines(records);
-         console.log("records --", records);
-         console.log("routines --", routines);
+         // console.log("records --", records);
+         // console.log("routines --", routines);
       });
    };
    useEffect(() => {
-      console.log("********** NewRoutine - ExerciseDatail **********");
+      // console.log("********** NewRoutine - ExerciseDatail **********");
 
-      console.log("values", values);
-      console.log("focusAreaRec", focusAreaRec);
-      console.log("exerciseRec.focusArea", exerciseRec.focusArea);
+      // console.log("values", values);
+      // console.log("focusAreaRec", focusAreaRec);
+      // console.log("exerciseRec.focusArea", exerciseRec.focusArea);
 
       fetchRoutines();
-      console.log("routines - useEffect", routines);
+      // console.log("routines - useEffect", routines);
    }, []);
    return (
       <View
@@ -518,7 +529,7 @@ const NewRoutine = ({ exerciseRec, setOpenRoutineDialog }) => {
                   width={225}
                />
                {/* https://www.youtube.com/watch?v=tN6MpJ9ElJY */}
-               {console.log("focusAreaRec", focusAreaRec)}
+               {/* {console.log("focusAreaRec", focusAreaRec)} */}
                <DropdownList
                   label="Name of the routine"
                   selectedValue={values.name}

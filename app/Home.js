@@ -6,15 +6,19 @@ import {
    TouchableOpacity,
    View,
 } from "react-native";
-import Images from "../constants/Images";
 import { useNavigation } from "@react-navigation/native";
-import NavBar from "../components/controls/NavBar";
+import { router } from "expo-router";
+import Images from "../src/constants/Images";
+import NavBar from "../src/components/controls/NavBar";
+import COLORS from "../src/constants/COLORS";
+import { useUserProfileStore } from "../src/stores/UserStore";
 
 const Home = () => {
    const navigation = useNavigation();
+   const userProfile = useUserProfileStore((state) => state.userProfile);
    const handleAppAccess = (e) => {
       const { screenName } = e;
-      navigation.navigate(screenName);
+      router.replace(screenName);
    };
 
    return (
@@ -26,49 +30,49 @@ const Home = () => {
          <ScrollView>
             <View>
                <MenuItem
-                  screenName="myCalendarStackNavigation"
+                  screenName="\myCalendar"
                   image={Images.calendar}
                   label="My Calendar"
                   handleAppAccess={handleAppAccess}
                />
                <MenuItem
-                  screenName="exerciseStackNavigation"
+                  screenName="\exercises"
                   image={Images.exercise}
                   label="Exercises"
                   handleAppAccess={handleAppAccess}
                />
                <MenuItem
-                  screenName="medicationStackNavigation"
+                  screenName="\medications"
                   image={Images.medication}
                   label="Medications"
                   handleAppAccess={handleAppAccess}
                />
                <MenuItem
-                  screenName="recipeStackNavigation"
+                  screenName="\recipes"
                   image={Images.recipe}
                   label="Recipes"
                   handleAppAccess={handleAppAccess}
                />
                <MenuItem
-                  screenName="generalHealthTopTabNavigation"
+                  screenName="\generalHealth"
                   image={Images.generalHealth}
                   label="General Health"
                   handleAppAccess={handleAppAccess}
                />
                <MenuItem
-                  screenName="dietStackNavigation"
+                  screenName="\diet"
                   image={Images.diet}
                   label="Diet"
                   handleAppAccess={handleAppAccess}
                />
                <MenuItem
-                  screenName="personalInformationTabNavigation"
+                  screenName="\personalInformation"
                   image={Images.personalInformation}
                   label="Personal Information"
                   handleAppAccess={handleAppAccess}
                />
                <MenuItem
-                  screenName="adminStackNavigation"
+                  screenName="\admin"
                   image={Images.personalInformation}
                   label="Adminstrative"
                   handleAppAccess={handleAppAccess}
@@ -86,7 +90,7 @@ const MenuItem = ({ screenName, image, label, handleAppAccess }) => (
          marginTop: 20,
          marginHorizontal: 20,
          padding: 20,
-         backgroundColor: "#fffff5",
+         backgroundColor: COLORS.lightGray01,
          borderRadius: 8,
          alignItems: "center",
       }}

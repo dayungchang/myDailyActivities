@@ -6,11 +6,11 @@ import {
    TouchableOpacity,
    View,
 } from "react-native";
-import Images from "../constants/Images";
 import { useNavigation } from "@react-navigation/native";
-import NavBar from "../components/controls/NavBar";
+import NavBar from "../../components/controls/NavBar";
+import Images from "../../constants/Images";
 
-const Home = () => {
+const Admin = () => {
    const navigation = useNavigation();
    const handleAppAccess = (e) => {
       const { screenName } = e;
@@ -113,7 +113,7 @@ const MenuItem = ({ screenName, image, label, handleAppAccess }) => (
    </TouchableOpacity>
 );
 
-export default Home;
+export default Admin;
 
 const styles = StyleSheet.create({
    bottom: {
@@ -128,4 +128,3 @@ const styles = StyleSheet.create({
       right: 16,
    },
 });
-

@@ -2,6 +2,7 @@
    "expo": {
       "name": "myDailyActivities",
       "slug": "myDailyActivities",
+      "scheme": "myDailyActivities",
       "version": "0.9.04",
       "orientation": "portrait",
       "icon": "./assets/icons/myDailyActivities.png",
@@ -23,6 +24,7 @@
          "package": "com.dayungchang.myDailyActivities"
       },
       "web": {
+         "bundler": "metro",
          "favicon": "./assets/favicon.png"
       },
       "extra": {

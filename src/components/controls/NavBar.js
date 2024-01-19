@@ -6,28 +6,27 @@ import {
    TouchableOpacity,
    View,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import COLORS from "../../constants/COLORS";
 import Typography from "./Typography";
 import GlobalStyle from "../../styles/GlobalStyle";
 import { signOut } from "firebase/auth";
 import { auth } from "../../data/Firebase";
+import { router } from "expo-router";
 
-const NavBar = ({ title, backScreen }) => {
-   const navigation = useNavigation();
+const NavBar = ({ title, backScreen, backScreenPath = "/Home" }) => {
    const _goBack = () => console.log("Went back");
    const _handleSearch = () => console.log("Searching");
 
    const _handleMore = () => console.log("Shown more");
    const handleMenuPressed = () => {
       if (title === "myDailyActivities") Alert.alert("Home menu pressed");
-      else navigation.goBack();
+      else router.replace(backScreenPath);
    };
    const handleLogout = () => {
       signOut(auth)
          .then(() => {
-            navigation.navigate("LoginStackNavigation");
+            router.replace("/");
          })
          .catch((err) => {
             console.log(err);

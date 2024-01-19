@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
    Alert,
    Image,
@@ -8,9 +9,8 @@ import {
    TouchableOpacity,
    View,
 } from "react-native";
-import NavBar from "../../components/controls/NavBar";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import {
    addDoc,
    collection,
@@ -21,21 +21,24 @@ import {
    query,
    where,
 } from "firebase/firestore";
-import { auth, db } from "../../data/Firebase";
-import Images from "../../constants/Images";
-import GlobalStyle from "../../styles/GlobalStyle";
-import Button from "../../components/controls/Button";
+import NavBar from "../../src/components/controls/NavBar";
+import { auth, db } from "../../src/data/Firebase";
+import Images from "../../src/constants/Images";
+import GlobalStyle from "../../src/styles/GlobalStyle";
+import Button from "../../src/components/controls/Button";
 import Checkbox from "expo-checkbox";
-import COLORS from "../../constants/COLORS";
-import RoutineImage from "../../components/RoutineImage";
-import RoutineSchema from "../../data/schemas/RoutineSchema";
-import Input from "../../components/controls/Input";
+import COLORS from "../../src/constants/COLORS";
+import RoutineImage from "../../src/components/RoutineImage";
+import RoutineSchema from "../../src/data/schemas/RoutineSchema";
+import Input from "../../src/components/controls/Input";
 
 const RoutineSelect = () => {
-   const route = useRoute();
+   const router = useRouter();
    const navigation = useNavigation();
+   const params = useLocalSearchParams();
+   // console.log("params", params);
 
-   const [exerciseRec, setExerciseRec] = useState(route.params.exerciseRec);
+   const [exerciseRec, setExerciseRec] = useState(params);
    const [routines, setRoutines] = useState(RoutineSchema);
    const [buttonLabel, setButtonLabel] = useState("Select");
    const [tempRec, setTempRec] = useState(RoutineSchema);
@@ -57,6 +60,7 @@ const RoutineSelect = () => {
    };
    const handleRoutineSelected = (routineRec) => {
       navigation.goBack();
+      // router.
    };
    const handleAddRoutine = async () => {
       // console.log("FocusArea", exerciseRec.focusArea);
@@ -137,11 +141,12 @@ const RoutineSelect = () => {
                   ]}
                >
                   {routines.length > 0 ? (
-                     routines.map((routine) => (
+                     routines.map((routine, index) => (
                         <RoutineCard
                            routine={routine}
                            exerciseRec={exerciseRec}
                            handleSelected={handleRoutineSelected}
+                           key={index}
                         />
                      ))
                   ) : (

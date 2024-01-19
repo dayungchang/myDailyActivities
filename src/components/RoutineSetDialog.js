@@ -54,8 +54,8 @@ const RoutineSetDialog = ({
       setShowRoutineSetDialog(false);
    };
    useEffect(() => {
-      console.log("exerciseRec", exerciseRec);
-      console.log("routineRec", routineRec);
+      // console.log("exerciseRec", exerciseRec);
+      // console.log("routineRec", routineRec);
    }, []);
 
    return (

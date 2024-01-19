@@ -4,7 +4,7 @@ import Images from "../constants/Images";
 const RoutineImage = ({ imageName }) => {
    return (
       <View style={{ justifyContent: "center", marginRight: 10 }}>
-         {console.log(imageName)}
+         {/* {console.log(imageName)} */}
 
          <Image
             source={Images[imageName]}

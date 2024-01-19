@@ -8,6 +8,8 @@ import RecipeStackNavigation from "./RecipeStackNavigation";
 import GeneralHealthTopTabNavigation from "./GeneralHealthTopTabNavigation";
 import DietStackNavigation from "./DietStackNavigation";
 import PersonalInformationTabNavigation from "./PersonalInformationTabNavigation";
+import AdminStackNavigation from "./AdminStackNavigation";
+import AdminDataStackNavigation from "./AdminDataStackNavigation";
 
 const HomeStackNavigation = () => {
    const stack = createNativeStackNavigator();
@@ -81,6 +83,15 @@ const HomeStackNavigation = () => {
                headerBackTitle: "Home",
                headerBackTitleStyle: { fontSize: 15 },
                title: "Information",
+            })}
+         />
+         <stack.Screen
+            name="adminStackNavigation"
+            component={AdminStackNavigation}
+            options={({ navigationBarColor, route }) => ({
+               headerBackTitle: "Home",
+               headerBackTitleStyle: { fontSize: 15 },
+               title: "Adminstrative",
             })}
          />
       </stack.Navigator>

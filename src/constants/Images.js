@@ -1,6 +1,6 @@
 const Images = {
-   abdominalcrunch: require("../../assets/icons/exercise/abdominalcrunch.jpg"),
-   abrollout: require("../../assets/icons/exercise/abroll-out.jpg"),
+   AbdominalCrunch: require("../../assets/icons/exercise/abdominalcrunch.jpg"),
+   AbRollout: require("../../assets/icons/exercise/abroll-out.jpg"),
    backextension: require("../../assets/icons/exercise/backextension.png"),
    bicepcurl: require("../../assets/icons/exercise/bicep_curl.png"),
    butterflymachine: require("../../assets/icons/exercise/Butterfly_Machine.png"),
@@ -18,6 +18,7 @@ const Images = {
    exercise: require("../../assets/icons/exercise.png"),
    exerciseballpike: require("../../assets/icons/exercise/exerciseballpike.png"),
    familyAndFriends: require("../../assets/icons/familyAndFriends.png"),
+   FocusArea: require("../../assets/icons/FocusArea.jpg"),
    generalHealth: require("../../assets/icons/generalHealth.png"),
    hangingKneeRaise: require("../../assets/icons/exercise/hangingKneeRaise.png"),
    lateralraise: require("../../assets/icons/exercise/Lateral_Raise.png"),

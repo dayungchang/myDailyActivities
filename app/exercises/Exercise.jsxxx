@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-   KeyboardAvoidingView,
-   Modal,
+   Image,
    Pressable,
    ScrollView,
    StyleSheet,
@@ -9,103 +8,132 @@ import {
    TouchableOpacity,
    View,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Feather } from "@expo/vector-icons";
-import {
-   addDoc,
-   arrayUnion,
-   collection,
-   doc,
-   onSnapshot,
-   query,
-   updateDoc,
-   where,
-} from "firebase/firestore";
-import NavBar from "../../../../src/components/controls/NavBar";
-import { db } from "../../../../src/data/Firebase";
-import COLORS from "../../../../src/constants/COLORS";
-import Button from "../../../../src/components/controls/Button";
-import LocationSchema from "../../../../src/data/schemas/LocationSchema";
-import Likes from "../../../../src/components/Likes";
-import DisplayIcon from "../../../../src/components/DisplayIcon";
-import GlobalStyle from "../../../../src/styles/GlobalStyle";
-import DialogHeader from "../../../../src/components/controls/DialogHeader";
-import Input from "../../../../src/components/controls/Input";
-import DropdownList from "../../../../src/components/controls/DropdownList";
-import FocusArea from "../../../../src/data/meta/FocusArea";
+import { Dropdown } from "react-native-element-dropdown";
 import {
    BottomModal,
    ModalContent,
    ModalTitle,
    SlideAnimation,
 } from "react-native-modals";
-import { useLocalSearchParams } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
+import {
+   addDoc,
+   collection,
+   onSnapshot,
+   orderBy,
+   query,
+   where,
+} from "firebase/firestore";
+import DisplayIcon from "../../src/components/DisplayIcon";
+import Likes from "../../src/components/Likes";
+import Button from "../../src/components/controls/Button";
+import ButtonOnOff from "../../src/components/controls/ButtonOnOff";
+import Input from "../../src/components/controls/Input";
+import NavBar from "../../src/components/controls/NavBar";
+import COLORS from "../../src/constants/COLORS";
+import Images from "../../src/constants/Images";
+import { auth, db } from "../../src/data/Firebase";
+import ExerciseSchema from "../../src/data/schemas/ExerciseSchema";
+import { useExerciseStore } from "../../src/stores/ExerciseStore";
+import { DateString, TimeSting } from "../../src/utils/Library";
+import NewExercise from "./components/NewExercise";
+// import {
+//    DateFormat,
+//    DateString,
+//    DateTimeFormat,
+//    TimeFormat,
+//    TimeSting,
+// } from "../../utils/Library";
 
-const Location = () => {
-   // console.log("params", params);
+const Exercise = () => {
+   const navigation = useNavigation();
+   const router = useRouter();
 
-   const [exerciseRec, setExerciseRec] = useState({});
+   const setCurrentExercise = useExerciseStore(
+      (state) => state.setCurrentExercise
+   );
 
-   const [locationRecs, setLocationRecs] = useState([{}]);
-   const [openLocationModel, setOpenLocationModel] = useState(false);
-   const [newLocation, setNewLocation] = useState(false);
+   const [exerciseRecs, setExerciseRecs] = useState([]);
+   const [newExerciseRec, setNewExerciseRec] = useState(ExerciseSchema);
 
-   const handlePlusPressed = () => {
-      setNewLocation(true);
-      setOpenLocationModel(true);
+   const [openNewExercise, setOpenNewExercise] = useState(false);
+   const [category, setCategory] = useState("All");
+   const [todos, setTodos] = useState([]);
+   const [todo, setTodo] = useState("");
+
+   const handleNewExercisePressed = () => {
+      setOpenNewExercise(true);
    };
-   const fetchLocations = () => {
-      const colRef = collection(db, "setup/exercise/location");
-      const qPull = query(colRef);
+   // const handleSaveNewExercise = () => {
+   //    const colRef = collection(db, "exercise");
+   //    addDoc(colRef, newExerciseRec).then((res) => {
+   //       let temp = { ...newExerciseRec, ["id"]: res.id };
+   //       console.log(
+   //          "Exercise.js - handleSaveNewExercise - newExerciseRec",
+   //          newExerciseRec
+   //       );
+
+   //       router?.push({
+   //          pathname: "/exercises/ExerciseDetail",
+   //          params: newExerciseRec,
+   //       });
+   //       setNewExerciseRec(ExerciseSchema);
+   //    });
+   // };
+
+   const fetchExercisesByUserUID = () => {
+      // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
+      const colRef = collection(db, "exercise");
+      const qPull = query(
+         colRef,
+         where("userUID", "==", auth.currentUser.uid),
+         orderBy("exerciseDate", "desc")
+      );
 
       onSnapshot(qPull, (snapshot) => {
          let records = [];
          snapshot.docs.forEach((doc) => {
             records.push({ ...doc.data(), id: doc.id });
          });
-         setLocationRecs(records);
+         console.log(records);
+
+         setExerciseRecs(records);
       });
    };
+
    useEffect(() => {
-      fetchLocations();
-      // fetchSetupExercise();
+      fetchExercisesByUserUID();
    }, []);
 
    return (
-      <View style={{ flex: 1, justifyContent: "space-between" }}>
-         <View style={{ gap: 10 }}>
+      <>
+         <View style={{ height: 65 }}>
             <NavBar
-               title="Setup Location"
-               backScreen="exercise"
-               backScreenPath="/(admin)/setup/SetupExercise/"
+               title="Exercise"
+               backScreen="Home"
+               backScreenPath="/Home"
             />
-            <View style={{ marginHorizontal: 10, marginBottom: 180 }}>
-               <ScrollView
-                  style={{
-                     borderWidth: 0.25,
-                     borderRadius: 7,
-                  }}
-               >
-                  {locationRecs ? (
-                     locationRecs.map((location) => (
-                        <View style={{ margin: 10 }}>
-                           <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                              {location.name}
-                           </Text>
-                           <Text>{location.description}</Text>
-                           <Text>{location.address}</Text>
-                           <Text>{location.type}</Text>
+         </View>
+         <ScrollView style={{ marginHorizontal: 10 }}>
+            <View
+               style={{
+                  marginBottom: 10,
+                  justifyContent: "space-between",
+               }}
+            >
+               <View style={{ paddingVertical: 20 }}>
+                  {exerciseRecs ? (
+                     exerciseRecs.map((exercise, index) => (
+                        <View key={index}>
+                           <ExerciseCard exerciseRec={exercise} />
                         </View>
                      ))
                   ) : (
-                     <Text>No location found!!!</Text>
+                     <Text>No exercise exists</Text>
                   )}
-
-                  {/* {exerciseRec.location.map((location) => {
-                  })} */}
-               </ScrollView>
+               </View>
             </View>
-         </View>
+         </ScrollView>
          <View
             style={{
                position: "absolute",
@@ -123,7 +151,7 @@ const Location = () => {
                   backgroundColor: COLORS.lightBlue01,
                   borderRadius: 30,
                }}
-               onPress={() => handlePlusPressed()}
+               onPress={handleNewExercisePressed}
             >
                <DisplayIcon
                   iconName="pluscircleo"
@@ -140,7 +168,7 @@ const Location = () => {
             swipeThreshold={200}
             modalTitle={
                <ModalTitle
-                  title={newLocation ? "Location - Add" : "Location - Edit"}
+                  title="Add an Exercise"
                   style={{
                      backgroundColor: COLORS.lightBlue,
                   }}
@@ -151,176 +179,29 @@ const Location = () => {
                   slideFrom: "bottom",
                })
             }
-            visible={openLocationModel}
+            visible={openNewExercise}
             onTouchOutside={() => setModalVisible(!isModalVisible)}
          >
-            <ModalContent style={{ width: "100%", height: 400 }}>
-               <LocationMaintenance
-                  setOpenLocationModel={setOpenLocationModel}
-                  locations={locationRecs}
+            <ModalContent style={{ width: "100%", height: 380 }}>
+               <NewExercise
+                  setOpenNewExercise={setOpenNewExercise}
+                  newExerciseRec={newExerciseRec}
+                  setNewExerciseRec={setNewExerciseRec}
+                  handleSaveNewExercise={handleSaveNewExercise}
                />
             </ModalContent>
          </BottomModal>
-      </View>
+      </>
    );
 };
 
-const LocationMaintenance = ({ setOpenLocationModel, locations }) => {
-   // const navigation = useNavigation();
-   // // **************************************************
-   const [values, setValues] = useState(LocationSchema);
+const ExerciseCard = ({ exerciseRec }) => {
+   const router = useRouter();
 
-   const [errors, setErrors] = useState({});
-   const [items, setItems] = useState(FocusArea);
-   const [dateString, setDateString] = useState("");
-   const [timeString, setTimeString] = useState("");
-   // // **************************************************
-   const validate = (fieldValues = values) => {
-      let temp = { ...errors };
-      console.log("fieldValue", fieldValues);
-
-      if ("name" in fieldValues)
-         temp.name = fieldValues.name ? "" : "Name of the location is required";
-      setErrors({ ...temp });
-      if (fieldValues === values)
-         return Object.values(temp).every((x) => x === "");
-   };
-   const handleInputs = (e) => {
-      const { name, value } = e;
-
-      setValues({ ...values, [name]: value });
-      validate({ [name]: value });
-   };
-   // const handleFeelingPressed = ({ selectedValue }) => {
-   //    setValues({ ...values, ["feeling"]: selectedValue });
-   // };
-   const handleSaveClicked = async () => {
-      if (validate()) {
-         console.log("values", values);
-         console.log("items", items);
-         console.log("errors", errors);
-         const colRef = collection(db, "setup/exercise/location");
-         addDoc(colRef, values).then((res) => {
-            setOpenLocationModel(false);
-         });
-      }
-   };
-   const handleCancelClicked = () => {
-      setOpenLocationModel(false);
-   };
-
-   // useEffect(() => {
-   // TODO: Store the last use location in the user document
-   //    setValues({
-   //       ...values,
-   //       locationName: "Planet Fittness",
-   //       userUID: auth.currentUser.uid,
-   //       exerciseDate: Date.now(),
-   //    });
-   //    setDateString(DateString(Date.now()));
-   //    setTimeString(TimeSting(Date.now()));
-   //    // let temp = items.filter((item) => item.value === "ABS Beginner");
-   //    // console.log("temp", temp);
-   //    // console.log("temp.routines", temp[0].routines);
-   // }, []);
-   // **************************************************
-   return (
-      <View>
-         {/* Header information */}
-         <View
-            style={{
-               marginHorizontal: 10,
-               marginTop: 20,
-               alignItems: "center",
-            }}
-         >
-            <Input
-               label="Location Name"
-               value={values.name}
-               iconName="location-pin"
-               iconFamily="MaterialIcons"
-               error={errors.name}
-               placeholder="Name of location"
-               onChangeText={(text) =>
-                  handleInputs({ name: "name", value: text })
-               }
-               width={225}
-               autoCapitalize="words"
-            />
-            <Input
-               label="Description"
-               value={values.description}
-               iconName="location-pin"
-               iconFamily="MaterialIcons"
-               error={errors.description}
-               placeholder="Description"
-               onChangeText={(text) =>
-                  handleInputs({ name: "description", value: text })
-               }
-               width={225}
-               autoCapitalize="words"
-            />
-            <Input
-               label="Address"
-               value={values.address}
-               iconName="location-pin"
-               iconFamily="MaterialIcons"
-               error={errors.address}
-               placeholder="Address of location"
-               onChangeText={(text) =>
-                  handleInputs({ name: "address", value: text })
-               }
-               width={225}
-               autoCapitalize="words"
-            />
-            <Input
-               label="Type"
-               value={values.type}
-               iconName="location-pin"
-               iconFamily="MaterialIcons"
-               error={errors.type}
-               placeholder="Type of location"
-               onChangeText={(text) =>
-                  handleInputs({ name: "type", value: text })
-               }
-               width={225}
-               autoCapitalize="words"
-            />
-
-            <View style={{ marginTop: 30 }}>
-               {/* <ButtonOnOff setFeelings={handleFeelingPressed} /> */}
-            </View>
-         </View>
-         <View
-            style={{
-               flexDirection: "row",
-               justifyContent: "space-between",
-               marginTop: 40,
-            }}
-         >
-            <Button
-               label="Cancel"
-               onPress={() => handleCancelClicked()}
-               buttonBlockStyle={{ flex: 2 / 5 }}
-               labelStyle={{ textAlign: "center" }}
-               labelColor={COLORS.black}
-               buttonColor={COLORS.grey}
-               width={125}
-            />
-            <Button
-               label="Save"
-               onPress={() => handleSaveClicked()}
-               buttonBlockStyle={{ flex: 2 / 5 }}
-               labelStyle={{ textAlign: "center" }}
-               width={125}
-            />
-         </View>
-      </View>
+   const currentExercise = useExerciseStore((state) => state.currentExercise);
+   const setCurrentExercise = useExerciseStore(
+      (state) => state.setCurrentExercise
    );
-};
-
-const LocationCard = ({ locationRec }) => {
-   const navigation = useNavigation();
 
    const [exerciseDateString, setExerciseDateString] = useState("");
    const [exerciseTimeString, setExerciseTimeString] = useState("");
@@ -340,8 +221,14 @@ const LocationCard = ({ locationRec }) => {
    };
    const handleExerciseCardPressed = () => {
       setCurrentExercise(exerciseRec);
+      // console.log("exerciseRec", exerciseRec);
+
       if (exerciseRec.status === "A") {
-         navigation.navigate("exerciseDetail", { exerciseRec: exerciseRec });
+         router?.push({
+            pathname: "/exercises/ExerciseDetail",
+            params: exerciseRec,
+         });
+         // navigation.navigate("exerciseDetail", { exerciseRec: exerciseRec });
          // navigation.navigate("ExerciseDetail", {
          //    NewExercise: false,
          //    values: exerciseRec,
@@ -351,9 +238,28 @@ const LocationCard = ({ locationRec }) => {
          Alert.alert("Exercise Completed");
       }
    };
+   const fetchRoutinesByExercise = () => {
+      // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
+      const colRef = collection(db, `/exercise/${exerciseRec.id}/routines`);
+      const qPull = query(colRef, orderBy("routineDate", "desc"));
+
+      onSnapshot(qPull, (snapshot) => {
+         let records = [];
+         snapshot.docs.forEach((doc) => {
+            records.push({
+               ...doc.data(),
+               id: doc.id,
+            });
+         });
+         setRoutineRecs(records);
+         setRoutineCount(records.length);
+      });
+   };
    useEffect(() => {
+      setRoutineCount(0);
       setExerciseDateString(DateString(exerciseRec.exerciseDate));
       setExerciseTimeString(TimeSting(exerciseRec.exerciseDate));
+      fetchRoutinesByExercise();
    }, []);
 
    return (
@@ -366,7 +272,9 @@ const LocationCard = ({ locationRec }) => {
             marginBottom: 10,
             paddingHorizontal: 15,
             backgroundColor:
-               exerciseRec.status === "A" ? "white" : COLORS.lightGrey,
+               exerciseRec.status === "A"
+                  ? COLORS.lightBlue01
+                  : COLORS.lightGray01,
          }}
       >
          <View
@@ -541,9 +449,47 @@ const LocationCard = ({ locationRec }) => {
       </Pressable>
    );
 };
-export default Location;
+
+export default Exercise;
 
 const styles = StyleSheet.create({
+   container: {
+      backgroundColor: "white",
+      padding: 5,
+   },
+   dropdown: {
+      height: 40,
+      borderColor: "gray",
+      borderWidth: 0.5,
+      borderRadius: 8,
+      paddingHorizontal: 8,
+      width: 300,
+   },
+   icon: {
+      marginRight: 5,
+   },
+   label: {
+      position: "absolute",
+      backgroundColor: "white",
+      top: -10,
+      zIndex: 999,
+      fontSize: 14,
+   },
+   placeholderStyle: {
+      fontSize: 16,
+   },
+   selectedTextStyle: {
+      fontSize: 16,
+   },
+   iconStyle: {
+      width: 20,
+      height: 20,
+   },
+   inputSearchStyle: {
+      height: 40,
+      fontSize: 16,
+   },
+
    newExerciseStyle: {
       borderWidth: 0.25,
       marginTop: -30,

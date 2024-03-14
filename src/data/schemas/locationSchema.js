@@ -1,4 +1,4 @@
-export default locationSchem = {
+export default LocationSchem = {
    name: "",
    description: "",
    address: "",

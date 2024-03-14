@@ -1,10 +1,13 @@
-import { Text, TouchableOpacity } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import COLORS from "../../constants/COLORS";
 import GlobalStyle from "../../styles/GlobalStyle";
 
 const Button = ({
    label,
+   leftImage = null,
+   rightImage = null,
    width,
+   height = 40,
    onPress = () => {},
    labelColor = COLORS.white,
    buttonColor = COLORS.blue,
@@ -16,25 +19,51 @@ const Button = ({
             GlobalStyle.boarderWithShadow,
             {
                width: width,
+               height: height,
                backgroundColor: buttonColor,
                fontWeight: "bold",
                fontSize: 18,
                borderRadius: 10,
+               justifyContent: "center",
             },
          ]}
          activeOpacity={0.7}
       >
-         <Text
+         <View
             style={{
-               color: labelColor,
-               fontWeight: "bold",
-               fontSize: 18,
-               textAlign: "center",
-               paddingVertical: 10,
+               flexDirection: "row",
+               justifyContent: "space-between",
+               alignItems: "center",
+               marginHorizontal: 20,
             }}
          >
-            {label}
-         </Text>
+            {leftImage ? (
+               <Image
+                  source={leftImage}
+                  style={{ width: 15, height: 15 }}
+               />
+            ) : (
+               <View></View>
+            )}
+            <Text
+               style={{
+                  color: labelColor,
+                  fontWeight: "bold",
+                  fontSize: 18,
+                  textAlign: "center",
+               }}
+            >
+               {label}
+            </Text>
+            {rightImage ? (
+               <Image
+                  source={rightImage}
+                  style={{ width: 15, height: 15 }}
+               />
+            ) : (
+               <View></View>
+            )}
+         </View>
       </TouchableOpacity>
    );
 };

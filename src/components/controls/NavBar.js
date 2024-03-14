@@ -12,16 +12,21 @@ import Typography from "./Typography";
 import GlobalStyle from "../../styles/GlobalStyle";
 import { signOut } from "firebase/auth";
 import { auth } from "../../data/Firebase";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 
 const NavBar = ({ title, backScreen, backScreenPath = "/Home" }) => {
+   const navigation = useNavigation();
    const _goBack = () => console.log("Went back");
    const _handleSearch = () => console.log("Searching");
 
    const _handleMore = () => console.log("Shown more");
    const handleMenuPressed = () => {
       if (title === "myDailyActivities") Alert.alert("Home menu pressed");
-      else router.replace(backScreenPath);
+      else {
+         if (backScreenPath === "GOBACK") {
+            router.back();
+         } else router.replace(backScreenPath);
+      }
    };
    const handleLogout = () => {
       signOut(auth)

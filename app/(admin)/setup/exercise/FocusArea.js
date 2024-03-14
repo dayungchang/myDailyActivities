@@ -25,14 +25,13 @@ import NavBar from "../../../../src/components/controls/NavBar";
 import { db } from "../../../../src/data/Firebase";
 import COLORS from "../../../../src/constants/COLORS";
 import Button from "../../../../src/components/controls/Button";
-import LocationSchema from "../../../../src/data/schemas/LocationSchema";
+import FocusAreaSchema from "../../../../src/data/schemas/FocusAreaSchema";
 import Likes from "../../../../src/components/Likes";
 import DisplayIcon from "../../../../src/components/DisplayIcon";
 import GlobalStyle from "../../../../src/styles/GlobalStyle";
 import DialogHeader from "../../../../src/components/controls/DialogHeader";
 import Input from "../../../../src/components/controls/Input";
 import DropdownList from "../../../../src/components/controls/DropdownList";
-import FocusArea from "../../../../src/data/meta/FocusArea";
 import {
    BottomModal,
    ModalContent,
@@ -41,21 +40,21 @@ import {
 } from "react-native-modals";
 import { useLocalSearchParams } from "expo-router";
 
-const Location = () => {
+const FocusArea = () => {
    // console.log("params", params);
 
-   const [exerciseRec, setExerciseRec] = useState({});
+   const [focusAreaRec, setFocusAreaRec] = useState({});
 
-   const [locationRecs, setLocationRecs] = useState([{}]);
-   const [openLocationModel, setOpenLocationModel] = useState(false);
-   const [newLocation, setNewLocation] = useState(false);
+   const [focusAreaRecs, setFocusAreaRecs] = useState([{}]);
+   const [openFocusAreaModel, setOpenFocusAreaModel] = useState(false);
+   const [newFocusArea, setNewFocusArea] = useState(false);
 
    const handlePlusPressed = () => {
-      setNewLocation(true);
-      setOpenLocationModel(true);
+      setNewFocusArea(true);
+      setOpenFocusAreaModel(true);
    };
-   const fetchLocations = () => {
-      const colRef = collection(db, "setup/exercise/location");
+   const fetchFocusAreas = () => {
+      const colRef = collection(db, "setup/exercise/focusArea");
       const qPull = query(colRef);
 
       onSnapshot(qPull, (snapshot) => {
@@ -63,11 +62,11 @@ const Location = () => {
          snapshot.docs.forEach((doc) => {
             records.push({ ...doc.data(), id: doc.id });
          });
-         setLocationRecs(records);
+         setFocusAreaRecs(records);
       });
    };
    useEffect(() => {
-      fetchLocations();
+      fetchFocusAreas();
       // fetchSetupExercise();
    }, []);
 
@@ -75,7 +74,7 @@ const Location = () => {
       <View style={{ flex: 1, justifyContent: "space-between" }}>
          <View style={{ gap: 10 }}>
             <NavBar
-               title="Setup Location"
+               title="Setup Focus Area"
                backScreen="exercise"
                backScreenPath="/(admin)/setup/SetupExercise/"
             />
@@ -86,19 +85,17 @@ const Location = () => {
                      borderRadius: 7,
                   }}
                >
-                  {locationRecs ? (
-                     locationRecs.map((location) => (
+                  {focusAreaRecs ? (
+                     focusAreaRecs.map((focusArea) => (
                         <View style={{ margin: 10 }}>
                            <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                              {location.name}
+                              {focusArea.name}
                            </Text>
-                           <Text>{location.description}</Text>
-                           <Text>{location.address}</Text>
-                           <Text>{location.type}</Text>
+                           <Text>{focusArea.description}</Text>
                         </View>
                      ))
                   ) : (
-                     <Text>No location found!!!</Text>
+                     <Text>No focus area found!!!</Text>
                   )}
 
                   {/* {exerciseRec.location.map((location) => {
@@ -140,7 +137,9 @@ const Location = () => {
             swipeThreshold={200}
             modalTitle={
                <ModalTitle
-                  title={newLocation ? "Location - Add" : "Location - Edit"}
+                  title={
+                     newFocusArea ? "Focus Area - Add" : "Focus Area - Edit"
+                  }
                   style={{
                      backgroundColor: COLORS.lightBlue,
                   }}
@@ -151,13 +150,13 @@ const Location = () => {
                   slideFrom: "bottom",
                })
             }
-            visible={openLocationModel}
+            visible={openFocusAreaModel}
             onTouchOutside={() => setModalVisible(!isModalVisible)}
          >
             <ModalContent style={{ width: "100%", height: 400 }}>
-               <LocationMaintenance
-                  setOpenLocationModel={setOpenLocationModel}
-                  locations={locationRecs}
+               <FocusAreaMaintenance
+                  setOpenFocusAreaModel={setOpenFocusAreaModel}
+                  focusAreas={focusAreaRecs}
                />
             </ModalContent>
          </BottomModal>
@@ -165,13 +164,11 @@ const Location = () => {
    );
 };
 
-const LocationMaintenance = ({ setOpenLocationModel, locations }) => {
-   // const navigation = useNavigation();
+const FocusAreaMaintenance = ({ setOpenFocusAreaModel }) => {
    // // **************************************************
-   const [values, setValues] = useState(LocationSchema);
+   const [values, setValues] = useState(FocusAreaSchema);
 
    const [errors, setErrors] = useState({});
-   const [items, setItems] = useState(FocusArea);
    const [dateString, setDateString] = useState("");
    const [timeString, setTimeString] = useState("");
    // // **************************************************
@@ -180,12 +177,15 @@ const LocationMaintenance = ({ setOpenLocationModel, locations }) => {
       console.log("fieldValue", fieldValues);
 
       if ("name" in fieldValues)
-         temp.name = fieldValues.name ? "" : "Name of the location is required";
+         temp.name = fieldValues.name
+            ? ""
+            : "Name of the focus area is required";
       setErrors({ ...temp });
       if (fieldValues === values)
          return Object.values(temp).every((x) => x === "");
    };
    const handleInputs = (e) => {
+      // exercise;
       const { name, value } = e;
 
       setValues({ ...values, [name]: value });
@@ -196,24 +196,21 @@ const LocationMaintenance = ({ setOpenLocationModel, locations }) => {
    // };
    const handleSaveClicked = async () => {
       if (validate()) {
-         console.log("values", values);
-         console.log("items", items);
-         console.log("errors", errors);
-         const colRef = collection(db, "setup/exercise/location");
+         const colRef = collection(db, "setup/exercise/focusArea");
          addDoc(colRef, values).then((res) => {
-            setOpenLocationModel(false);
+            setOpenFocusAreaModel(false);
          });
       }
    };
    const handleCancelClicked = () => {
-      setOpenLocationModel(false);
+      setOpenFocusAreaModel(false);
    };
 
    // useEffect(() => {
-   // TODO: Store the last use location in the user document
+   // TODO: Store the last use focus area in the user document
    //    setValues({
    //       ...values,
-   //       locationName: "Planet Fittness",
+   //       focusArea: "Planet Fittness",
    //       userUID: auth.currentUser.uid,
    //       exerciseDate: Date.now(),
    //    });
@@ -235,12 +232,12 @@ const LocationMaintenance = ({ setOpenLocationModel, locations }) => {
             }}
          >
             <Input
-               label="Location Name"
+               label="Focus Area"
                value={values.name}
                iconName="location-pin"
                iconFamily="MaterialIcons"
                error={errors.name}
-               placeholder="Name of location"
+               placeholder="Name of focus area"
                onChangeText={(text) =>
                   handleInputs({ name: "name", value: text })
                }
@@ -260,36 +257,6 @@ const LocationMaintenance = ({ setOpenLocationModel, locations }) => {
                width={225}
                autoCapitalize="words"
             />
-            <Input
-               label="Address"
-               value={values.address}
-               iconName="location-pin"
-               iconFamily="MaterialIcons"
-               error={errors.address}
-               placeholder="Address of location"
-               onChangeText={(text) =>
-                  handleInputs({ name: "address", value: text })
-               }
-               width={225}
-               autoCapitalize="words"
-            />
-            <Input
-               label="Type"
-               value={values.type}
-               iconName="location-pin"
-               iconFamily="MaterialIcons"
-               error={errors.type}
-               placeholder="Type of location"
-               onChangeText={(text) =>
-                  handleInputs({ name: "type", value: text })
-               }
-               width={225}
-               autoCapitalize="words"
-            />
-
-            <View style={{ marginTop: 30 }}>
-               {/* <ButtonOnOff setFeelings={handleFeelingPressed} /> */}
-            </View>
          </View>
          <View
             style={{
@@ -319,11 +286,13 @@ const LocationMaintenance = ({ setOpenLocationModel, locations }) => {
    );
 };
 
-const LocationCard = ({ locationRec }) => {
+const FocusAreaCard = ({ focusAreaRec }) => {
    const navigation = useNavigation();
 
    const [exerciseDateString, setExerciseDateString] = useState("");
    const [exerciseTimeString, setExerciseTimeString] = useState("");
+   const [currentFocusArea, setCurrentFocusArea] = useState({});
+
    const [routineRecs, setRoutineRecs] = useState([]);
    const [routineCount, setRoutineCount] = useState(0);
    const [showDetail, setShowDetail] = useState(false);
@@ -338,27 +307,27 @@ const LocationCard = ({ locationRec }) => {
       }
       return;
    };
-   const handleExerciseCardPressed = () => {
-      setCurrentExercise(exerciseRec);
-      if (exerciseRec.status === "A") {
-         navigation.navigate("exerciseDetail", { exerciseRec: exerciseRec });
+   const handleFocusAreaCardPressed = () => {
+      setCurrentFocusArea(focusAreaRecRec);
+      if (focusAreaRec.status === "A") {
+         // navigation.navigate("exerciseDetail", { exerciseRec: exerciseRec });
          // navigation.navigate("ExerciseDetail", {
          //    NewExercise: false,
          //    values: exerciseRec,
          //    routineRecs: routineRecs,
          // });
       } else {
-         Alert.alert("Exercise Completed");
+         Alert.alert("Focus area Completed");
       }
    };
    useEffect(() => {
-      setExerciseDateString(DateString(exerciseRec.exerciseDate));
-      setExerciseTimeString(TimeSting(exerciseRec.exerciseDate));
+      // setExerciseDateString(DateString(exerciseRec.exerciseDate));
+      // setExerciseTimeString(TimeSting(exerciseRec.exerciseDate));
    }, []);
 
    return (
       <Pressable
-         onPress={() => handleExerciseCardPressed()}
+         onPress={() => handleFocusAreaCardPressed()}
          style={{
             padding: 10,
             borderWidth: 0.2,
@@ -366,7 +335,7 @@ const LocationCard = ({ locationRec }) => {
             marginBottom: 10,
             paddingHorizontal: 15,
             backgroundColor:
-               exerciseRec.status === "A" ? "white" : COLORS.lightGrey,
+               focusAreaRec.status === "A" ? "white" : COLORS.lightGrey,
          }}
       >
          <View
@@ -388,10 +357,10 @@ const LocationCard = ({ locationRec }) => {
             >
                <Text style={styles.headerLabelStyle}>{exerciseDateString}</Text>
                <Text style={styles.headerLabelStyle}>
-                  {exerciseRec.locationName}
+                  {focusAreaRec.focusArea}
                </Text>
             </View>
-            <Likes feelingCount={exerciseRec.feeling} />
+            <Likes feelingCount={focusAreaRec.feeling} />
          </View>
          <View style={{ gap: 10 }}>
             <View
@@ -405,9 +374,9 @@ const LocationCard = ({ locationRec }) => {
                <View style={{ flexDirection: "row", gap: 10 }}>
                   <Text style={{ fontSize: 16 }}>{exerciseTimeString}</Text>
                   <View style={{ flexDirection: "row", gap: 5 }}>
-                     {exerciseRec.duration === "D" ? (
+                     {focusAreaRec.duration === "D" ? (
                         <Text style={{ fontSize: 16 }}>
-                           ({exerciseRec.duration})
+                           ({focusAreaRec.duration})
                         </Text>
                      ) : (
                         <Text></Text>
@@ -418,7 +387,7 @@ const LocationCard = ({ locationRec }) => {
                   <Text style={{ fontSize: 16, fontWeight: "bold" }}>
                      Weight
                   </Text>
-                  <Text style={{ fontSize: 16 }}>{exerciseRec.weight}</Text>
+                  <Text style={{ fontSize: 16 }}>{focusAreaRec.weight}</Text>
                   <Text style={{ fontSize: 16, fontWeight: "bold" }}>lbs</Text>
                </View>
             </View>
@@ -433,7 +402,7 @@ const LocationCard = ({ locationRec }) => {
                <Text style={{ fontSize: 16, fontWeight: "bold" }}>
                   Focus area
                </Text>
-               <Text style={{ fontSize: 16 }}>{exerciseRec.focusArea}</Text>
+               <Text style={{ fontSize: 16 }}>{focusAreaRec.focusArea}</Text>
             </View>
          </View>
          <View>
@@ -533,7 +502,7 @@ const LocationCard = ({ locationRec }) => {
                         </View>
                      ))
                   ) : (
-                     <Text>No exercise exists</Text>
+                     <Text>No focus area exists</Text>
                   )}
                </ScrollView>
             )}
@@ -541,10 +510,10 @@ const LocationCard = ({ locationRec }) => {
       </Pressable>
    );
 };
-export default Location;
+export default FocusArea;
 
 const styles = StyleSheet.create({
-   newExerciseStyle: {
+   newFocusAreaStyle: {
       borderWidth: 0.25,
       marginTop: -30,
       marginHorizontal: 30,
@@ -558,28 +527,28 @@ const styles = StyleSheet.create({
       borderTopRightRadius: 10,
       alignItems: "center",
    },
-   exerciseCardStyle: {
+   focusAreaCardStyle: {
       padding: 10,
       borderWidth: 0.2,
       borderRadius: 7,
       backgroundColor: COLORS.lightGrey,
       marginBottom: 10,
    },
-   exerciseCardHeaderStyle: {
+   focusAreaCardHeaderStyle: {
       alignItems: "flex-start",
       flexDirection: "row",
       marginBottom: 5,
       gap: 20,
       justifyContent: "space-between",
    },
-   exerciseCardBodyStyle: { marginHorizontal: 10 },
-   exerciseCardBodyRowStyle: {
+   focusAreaCardBodyStyle: { marginHorizontal: 10 },
+   focusAreaCardBodyRowStyle: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
       gap: 15,
    },
-   exerciseCardListStyle: {
+   focusAreaCardListStyle: {
       marginHorizontal: 10,
       marginTop: 5,
       borderWidth: 0.25,

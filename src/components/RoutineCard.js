@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import {
    collection,
+   collectionGroup,
    onSnapshot,
    orderBy,
    query,
@@ -20,9 +21,10 @@ import { db } from "../data/Firebase";
 import COLORS from "../constants/COLORS";
 import Images from "../constants/Images";
 import Likes from "./Likes";
-import RoutineImage from "./RoutineImage";
+import RoutineImage from "../../app/exercises/components/RoutineImage";
 import RoutineSetDialog from "./RoutineSetDialog";
 import { useExerciseStore } from "../stores/ExerciseStore";
+import Button from "./controls/Button";
 
 const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
    const [values, setValues] = useState({});
@@ -41,14 +43,13 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
       setShowRoutineSetDialog(true);
    };
 
+   const fetchRoutineStats = () => {
+      const colRef = collectionGroup(db, `exercise\$`);
+   };
    const fetchRoutinesSetByRoutine = () => {
       // https://github.com/iamshaunjp/Getting-Started-with-Firebase-9/blob/lesson-9/src/index.js
       const colRef = collection(db, "routineSet");
-      const qPull = query(
-         colRef,
-         where("routineUID", "==", record.id),
-         orderBy("setDate")
-      );
+      const qPull = query(colRef, orderBy("setDate"));
 
       onSnapshot(qPull, (snapshot) => {
          let records = [];
@@ -61,6 +62,8 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
    };
 
    useEffect(() => {
+      console.log("record", record);
+
       fetchRoutinesSetByRoutine();
    }, []);
    return (
@@ -68,7 +71,6 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
          key={{ index }}
          style={{
             flex: 1,
-            borderBottomWidth: 0.5,
             padding: 10,
             flexDirection: "row",
          }}
@@ -80,18 +82,27 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
          </View>
          <View>
             <View
-               style={{ flexDirection: "row", justifyContent: "space-between" }}
+               style={{
+                  felx: 1,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+               }}
             >
                <Text style={{ fontSize: 20, fontWeight: "bold" }}>
                   {record.name}
                </Text>
                <Likes feelingCount={record.feeling} />
             </View>
-            <View style={{ flexDirection: "row", gap: 10, marginVertical: 10 }}>
+            <View
+               style={{
+                  flexDirection: "row",
+                  gap: 10,
+                  marginVertical: 10,
+               }}
+            >
                <View
                   style={{
                      width: 100,
-                     justifyContent: "flex-end",
                      flexDirection: "row",
                   }}
                >
@@ -149,23 +160,13 @@ const RoutineCard = ({ record, index, setShowRoutineSetDialog }) => {
                ) : (
                   <View></View>
                )}
-               <TouchableOpacity
-                  onPress={handleAddRoutineSet}
-                  style={{
-                     padding: 2,
-                     paddingHorizontal: 15,
-                     backgroundColor: COLORS.grey,
-                     borderRadius: 15,
-                     flexDirection: "row",
-                     gap: 5,
-                     alignItems: "center",
-                     justifyContent: "center",
-                  }}
-               >
-                  <Text style={{ fontSize: 16, textAlign: "center" }}>
-                     + Set
-                  </Text>
-               </TouchableOpacity>
+
+               <View style={{ alignItems: "flex-end" }}>
+                  <Button
+                     label="+ Set"
+                     width={150}
+                  />
+               </View>
             </View>
             <View>
                {showDetail && (

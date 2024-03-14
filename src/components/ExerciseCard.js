@@ -166,7 +166,7 @@ const ExerciseCard = ({ exerciseRec }) => {
                   justifyContent: "space-between",
                }}
             >
-               {routineCount > 0 && (
+               {routineRecs.length > 0 && (
                   <TouchableOpacity
                      onPress={() => setShowDetail(!showDetail)}
                      style={{

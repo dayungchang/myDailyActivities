@@ -13,7 +13,7 @@ const DropdownList = ({
    iconName,
    iconFamily,
    placeholder,
-   // error,
+   error,
    onChangeValue,
    width,
    dropDownDirection,
@@ -32,7 +32,7 @@ const DropdownList = ({
       <View
          style={{
             marginTop: 10,
-            // marginBottom: error ? 0 : 10,
+            marginBottom: 30,
             width: width ? width : 280,
          }}
       >

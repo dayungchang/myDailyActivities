@@ -3,9 +3,10 @@ export default RoutineSchema = {
    exerciseUID: "",
    image: "",
    name: "",
+   description: "",
    routineDate: "",
+   routineEnd: "",
+   status: "A",
    feeling: "",
-   weight: "",
-   reps: "",
 };
 

@@ -21,6 +21,18 @@ export const TimeFormat = {
    minute: "2-digit",
    second: "2-digit",
 };
+export const TimeFormat2 = {
+   day: "2-digit",
+   hour: "2-digit",
+   minute: "2-digit",
+   hour12: false,
+};
+export const DayofWeekShortFormat = {
+   weekday: "short",
+};
+export const DayofWeekLongFormat = {
+   weekday: "long",
+};
 
 export const DateString = (dateData) => {
    return new Intl.DateTimeFormat("en-US", DateFormat).format(dateData);
@@ -29,23 +41,22 @@ export const TimeSting = (timeData) => {
    return new Intl.DateTimeFormat("en-US", TimeFormat).format(timeData);
 };
 export const DurationHM = (startDateTime, endDateTime) => {
-   let startShiftTime = moment(
-      new Intl.DateTimeFormat("en-US", DateTimeFormat).format(startDateTime),
-      ["DD-MM-YYYY h:mm:ss A"]
-   ).utcOffset(0, false);
-   let endShiftTime = moment(
-      new Intl.DateTimeFormat("en-US", DateTimeFormat).format(endDateTime),
-      ["DD-MM-YYYY h:mm:ss A"]
-   ).utcOffset(0, false);
-
-   var TotalSeconds = endShiftTime.diff(startShiftTime, "seconds");
-
-   var hours = Math.floor(TotalSeconds / 3600);
-   // console.log("Hours", hours);
-
-   var minutes = Math.floor((TotalSeconds / 60) % 60);
-   return ` ${hours}:${minutes.toString().padStart(2, 0)}`;
-   // console.log('hours: ' + duration.hours(), 'minutes: ' + duration.minutes());
+   let lapsTime = "";
+   if (startDateTime && endDateTime) {
+      const diffTime = endDateTime - startDateTime;
+      lapsTime = Intl.DateTimeFormat("en-US", TimeFormat2).format(diffTime);
+   }
+   return lapsTime;
+};
+export const DayOfWeekLong = (dateData) => {
+   return new Intl.DateTimeFormat("en-US", DayofWeekLongFormat).format(
+      dateData
+   );
+};
+export const DayOfWeekShort = (dateData) => {
+   return new Intl.DateTimeFormat("en-US", DayofWeekShortFormat).format(
+      dateData
+   );
 };
 export const HandleInputs = (e, { values }, { setValues }) => {
    const { name, value } = e;

@@ -61,14 +61,15 @@ const Input = ({
       <View
          style={{
             marginTop: 5,
-            marginBottom: error ? 0 : 10,
+            marginBottom: error ? 20 : 15,
             width: width ? width : 280,
          }}
       >
          <Text
             style={{
-               fontSize: 10,
+               fontSize: 14,
                color: COLORS.darkGrey01,
+               marginBottom: 5,
             }}
          >
             {label}
